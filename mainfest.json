@@ -1,0 +1,22 @@
+{
+  "name": "Madina Institute Weekly Dhikr",
+  "short_name": "MI Dhikr",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FDFBF5",
+  "theme_color": "#065f46",
+  "description": "The weekly dhikr and qasa'id from Madina Institute.",
+  "icons": [
+    {
+      "src": "images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+}
