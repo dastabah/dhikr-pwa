@@ -5,90 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Madina Institute Weekly Dhikr</title>
     <script src="https://cdn.tailwindcss.com"></script>
-	<link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles from original file */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .arabic {
-            font-family: 'Amiri', serif;
-            line-height: 2.5;
-        }
-        .card {
-            background-color: #FFFFFF;
-            border: 1px solid #E5E0D4;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 2rem; /* Add space between cards on the same page */
-        }
-        .main-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-        }
-        .section-title {
-            font-family: 'Amiri', serif;
-            font-weight: 700;
-        }
+        /* Base styles */
+        body { font-family: 'Inter', sans-serif; }
+        .arabic { font-family: 'Amiri', serif; line-height: 2.5; }
+        .card { background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .main-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.05em; }
+        .section-title { font-family: 'Amiri', serif; font-weight: 700; }
 
-        /* NEW STYLES FOR PWA LAYOUT */
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Prevents vertical scroll on the main body */
-            height: 100%;
-            width: 100%;
-            background-color: #FDFBF5; /* Moved background color here */
-        }
-        .swipe-container {
-            display: flex;
-            overflow-x: auto; /* Allows horizontal scrolling/swiping */
-            width: 100vw;
-            height: 100vh;
-            scroll-snap-type: x mandatory; /* Enforces snapping to a page */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
-        .page {
-            flex: 0 0 100vw; /* Each page takes up the full viewport width */
-            width: 100vw;
-            height: 100vh;
-            overflow-y: auto; /* Allows vertical scrolling WITHIN a long page */
-            scroll-snap-align: start; /* Snaps the page to the start of the container */
-            padding: 1rem;
-            padding-bottom: 80px; /* Add padding to bottom to avoid nav bar overlap */
-        }
-        /* Hide the horizontal scrollbar */
+        /* PWA LAYOUT STYLES */
+        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #FDFBF5; }
+        .swipe-container { display: flex; overflow-x: auto; width: 100vw; height: 100vh; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .page { flex: 0 0 100vw; width: 100vw; height: 100vh; overflow-y: auto; scroll-snap-align: start; padding: 1rem; padding-top: 80px; /* Space for top header */ padding-bottom: 80px; /* Space for bottom nav */ }
         .swipe-container::-webkit-scrollbar { display: none; }
         .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .toc-link {
-            display: block;
-            padding: 1rem;
-            background-color: #FFFFFF;
-            border: 1px solid #E5E0D4;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1e3a8a; /* A nice blue for links */
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .toc-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-        }
+        /* Table of Contents Link Styles */
+        .toc-link { display: block; padding: 1rem; background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 1.125rem; font-weight: 600; color: #1e3a8a; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .toc-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+        /* HOVER HIGHLIGHT STYLE */
+        .highlightable-text:hover { background-color: #dcfce7; color: #14532d; cursor: pointer; border-radius: 6px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
+        
+        /* NAV DOTS STYLE */
+        .nav-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #d1d5db; /* gray-300 */ transition: background-color 0.2s ease-in-out; border: none; padding: 0; }
+        .nav-dot.active { background-color: #059669; /* emerald-600 */ }
     </style>
 </head>
 <body class="text-gray-800">
 
+    <header class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm z-10">
+        <div class="max-w-3xl mx-auto text-center p-4">
+            <h2 id="active-section-title" class="text-xl font-semibold text-emerald-800 truncate"></h2>
+        </div>
+    </header>
+
     <div class="swipe-container">
 
-        <div class="page" id="home">
+        <div class="page" id="home" data-title="Home">
             <div class="max-w-3xl mx-auto">
                 <header class="text-center mb-10">
                     <img src="https://i.pinimg.com/1200x/9a/43/14/9a4314d66273d8fbe3c6aa5ebdc51471.jpg" alt="The Green Dome of the Prophet's Mosque" class="rounded-xl w-full shadow-lg mb-6">
@@ -110,121 +67,161 @@
             </div>
         </div>
 
-        <div class="page" id="fatihah">
+        <div class="page" id="fatihah" data-title="Surah Al-Fatihah">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Surah Al-Fatihah</h2>
                     <div class="space-y-6">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(١) بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Bismillāhi-r-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1">1. In the name of Allah, the Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٢) الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Alḥamdu lillāhi Rabbi-l-ʿālamīn</p><p class="text-gray-700 mt-1">2. All praise is due to Allah, Lord of the worlds</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٣) الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ar-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1">3. The Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٤) مَالِكِ يَوْمِ الدِّينِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Māliki yawmi-d-dīn</p><p class="text-gray-700 mt-1">4. Sovereign of the Day of Recompense</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٥) إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Iyyāka naʿbudu wa iyyāka nastaʿīn</p><p class="text-gray-700 mt-1">5. It is You we worship and You we ask for help</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٦) اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ihdinā-ṣ-ṣirāṭa-l-mustaqīm</p><p class="text-gray-700 mt-1">6. Guide us to the straight path</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right">(٧) صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ṣirāṭa-lladhīna anʿamta ʿalayhim ghayri-l-maghḍūbi ʿalayhim wa la-ḍ-ḍāllīn</p><p class="text-gray-700 mt-1">7. The path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who are astray</p></div>
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(١) بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Bismillāhi-r-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1 highlightable-text">1. In the name of Allah, the Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٢) الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Alḥamdu lillāhi Rabbi-l-ʿālamīn</p><p class="text-gray-700 mt-1 highlightable-text">2. All praise is due to Allah, Lord of the worlds</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٣) الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ar-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1 highlightable-text">3. The Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٤) مَالِكِ يَوْمِ الدِّينِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Māliki yawmi-d-dīn</p><p class="text-gray-700 mt-1 highlightable-text">4. Sovereign of the Day of Recompense</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٥) إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Iyyāka naʿbudu wa iyyāka nastaʿīn</p><p class="text-gray-700 mt-1 highlightable-text">5. It is You we worship and You we ask for help</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٦) اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ihdinā-ṣ-ṣirāṭa-l-mustaqīm</p><p class="text-gray-700 mt-1 highlightable-text">6. Guide us to the straight path</p></div><hr class="border-emerald-100">
+                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٧) صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ṣirāṭa-lladhīna anʿamta ʿalayhim ghayri-l-maghḍūbi ʿalayhim wa la-ḍ-ḍāllīn</p><p class="text-gray-700 mt-1 highlightable-text">7. The path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who are astray</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="istighfar">
+        <div class="page" id="istighfar" data-title="Sayyidul Istighfar">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Sayyidul Istighfar</h2>
                     <div class="space-y-6">
-                        <div><p class="arabic text-3xl text-right">اللَّهُمَّ أَنْتَ رَبِّي</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Allāhumma anta Rabbī</p><p class="text-gray-700 mt-1">O Allah, You are my Lord</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">لَا إِلَٰهَ إِلَّا أَنْتَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">lā ilāha illā Anta</p><p class="text-gray-700 mt-1">There is no god but You</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">خَلَقْتَنِي وَأَنَا عَبْدُكَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">khalaqtanī wa anā ʿabduka</p><p class="text-gray-700 mt-1">You created me and I am Your servant</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">وَأَنَا عَلَىٰ عَهْدِكَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">wa anā ʿalā ʿahdika</p><p class="text-gray-700 mt-1">And I am upon Your covenant</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">وَوَعْدِكَ مَا اسْتَطَعْتُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">wa waʿdika mā-staṭaʿtu</p><p class="text-gray-700 mt-1">and Your promise as much as I can</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">أَعُوذُ بِكَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Aʿūdhu bika</p><p class="text-gray-700 mt-1">I seek refuge in You</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">مِنْ شَرِّ مَا صَنَعْتُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">min sharri mā ṣanaʿtu</p><p class="text-gray-700 mt-1">from the evil of what I have done</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">أَبُوءُ لَكَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">abū'u laka</p><p class="text-gray-700 mt-1">I acknowledge to you</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">بِنِعْمَتِكَ عَلَيَّ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">bi niʿmatika ʿalayya</p><p class="text-gray-700 mt-1">Your favor upon me</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">وَأَبُوءُ بِذَنْبِي</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">wa abū'u bi dhanbī</p><p class="text-gray-700 mt-1">and I acknowledge my sin</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">فَاغْفِرْ لِي</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">fa-ghfir lī</p><p class="text-gray-700 mt-1">So forgive me</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">fa innahu lā yaghfiru-dh-dhunūba</p><p class="text-gray-700 mt-1">for verily none forgives sins</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right">إِلَّا أَنْتَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">illā Anta</p><p class="text-gray-700 mt-1">except You</p></div>
+                        <div><p class="arabic text-3xl text-right highlightable-text">اللَّهُمَّ أَنْتَ رَبِّي</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Allāhumma anta Rabbī</p><p class="text-gray-700 mt-1 highlightable-text">O Allah, You are my Lord</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">لَا إِلَٰهَ إِلَّا أَنْتَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">lā ilāha illā Anta</p><p class="text-gray-700 mt-1 highlightable-text">There is no god but You</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">خَلَقْتَنِي وَأَنَا عَبْدُكَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">khalaqtanī wa anā ʿabduka</p><p class="text-gray-700 mt-1 highlightable-text">You created me and I am Your servant</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">وَأَنَا عَلَىٰ عَهْدِكَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">wa anā ʿalā ʿahdika</p><p class="text-gray-700 mt-1 highlightable-text">And I am upon Your covenant</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">وَوَعْدِكَ مَا اسْتَطَعْتُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">wa waʿdika mā-staṭaʿtu</p><p class="text-gray-700 mt-1 highlightable-text">and Your promise as much as I can</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">أَعُوذُ بِكَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Aʿūdhu bika</p><p class="text-gray-700 mt-1 highlightable-text">I seek refuge in You</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">مِنْ شَرِّ مَا صَنَعْتُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">min sharri mā ṣanaʿtu</p><p class="text-gray-700 mt-1 highlightable-text">from the evil of what I have done</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">أَبُوءُ لَكَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">abū'u laka</p><p class="text-gray-700 mt-1 highlightable-text">I acknowledge to you</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">بِنِعْمَتِكَ عَلَيَّ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">bi niʿmatika ʿalayya</p><p class="text-gray-700 mt-1 highlightable-text">Your favor upon me</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">وَأَبُوءُ بِذَنْبِي</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">wa abū'u bi dhanbī</p><p class="text-gray-700 mt-1 highlightable-text">and I acknowledge my sin</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">فَاغْفِرْ لِي</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">fa-ghfir lī</p><p class="text-gray-700 mt-1 highlightable-text">So forgive me</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">fa innahu lā yaghfiru-dh-dhunūba</p><p class="text-gray-700 mt-1 highlightable-text">for verily none forgives sins</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text">إِلَّا أَنْتَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">illā Anta</p><p class="text-gray-700 mt-1 highlightable-text">except You</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="adhkar">
+        <div class="page" id="adhkar" data-title="Adhkar">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Adhkar</h2>
                     <div class="space-y-8">
-                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Istighfar - 100 times</h3><p class="arabic text-3xl text-right" dir="rtl">أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Astaghfirullāha-l-ʿAẓīm wa atūbu ilayh</p><p class="text-gray-700 mt-1">I seek forgiveness from Allah, the Mighty, and I repent to Him</p></div><hr class="border-emerald-100">
-                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Tahlil - 100 times</h3><p class="arabic text-3xl text-right" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1">There is no deity worthy of worship except Allah</p></div><hr class="border-emerald-100">
-                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Salawat - 100 times</h3><p class="arabic text-3xl text-right" dir="rtl">اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ النُّورِ وَآلِهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Allāhumma ṣalli ʿalā Sayyidinā Muḥammadin an-Nūr wa ālih</p><p class="text-gray-700 mt-1">O Allah, send prayers upon our Master Muhammad ﷺ, the Light, and his Family</p></div>
+                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Istighfar - 100 times</h3><p class="arabic text-3xl text-right highlightable-text" dir="rtl">أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Astaghfirullāha-l-ʿAẓīm wa atūbu ilayh</p><p class="text-gray-700 mt-1 highlightable-text">I seek forgiveness from Allah, the Mighty, and I repent to Him</p></div><hr class="border-emerald-100">
+                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Tahlil - 100 times</h3><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah</p></div><hr class="border-emerald-100">
+                        <div><h3 class="font-semibold text-xl mb-2 text-emerald-800">Salawat - 100 times</h3><p class="arabic text-3xl text-right highlightable-text" dir="rtl">اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ النُّورِ وَآلِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Allāhumma ṣalli ʿalā Sayyidinā Muḥammadin an-Nūr wa ālih</p><p class="text-gray-700 mt-1 highlightable-text">O Allah, send prayers upon our Master Muhammad ﷺ, the Light, and his Family</p></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="page" id="qasaid-latifiyyah">
+        <div class="page" id="qasaid-latifiyyah" data-title="Qasida: The Latifiyyah">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">The Latifiyyah</h2>
                     <div class="space-y-6">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">يَا لَطِيفًا بِخَلْقِهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Yā Laṭīfan bi khalqih</p><p class="text-gray-700 mt-1">O Gentle One, compassionate with His creation</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">يَا خَبِيرًا بِخَلْقِهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Yā Khabīran bi khalqih</p><p class="text-gray-700 mt-1">O All-Aware, One who is all-aware of His creation</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">يَا عَلِيمًا بِخَلْقِهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Yā ʿAlīman bi khalqih</p><p class="text-gray-700 mt-1">O All-Knowing, One who is all-knowledgeable of His Creation</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">اُلْطُفْ بِنَا وَالْمُسْلِمِينَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ulṭuf binā wa-l muslimīn</p><p class="text-gray-700 mt-1">Be gentle with us and the Muslims</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">يَا لَطِيفُ، يَا خَبِيرُ، يَا عَلِيمُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Yā Laṭīfu, Yā Khabīru, Yā ʿAlīmu</p><p class="text-gray-700 mt-1">O Gentle One, O All-Aware One, O All-Knowing One</p></div>
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">يَا لَطِيفًا بِخَلْقِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Yā Laṭīfan bi khalqih</p><p class="text-gray-700 mt-1 highlightable-text">O Gentle One, compassionate with His creation</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">يَا خَبِيرًا بِخَلْقِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Yā Khabīran bi khalqih</p><p class="text-gray-700 mt-1 highlightable-text">O All-Aware, One who is all-aware of His creation</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">يَا عَلِيمًا بِخَلْقِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Yā ʿAlīman bi khalqih</p><p class="text-gray-700 mt-1 highlightable-text">O All-Knowing, One who is all-knowledgeable of His Creation</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">اُلْطُفْ بِنَا وَالْمُسْلِمِينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ulṭuf binā wa-l muslimīn</p><p class="text-gray-700 mt-1 highlightable-text">Be gentle with us and the Muslims</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">يَا لَطِيفُ، يَا خَبِيرُ، يَا عَلِيمُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Yā Laṭīfu, Yā Khabīru, Yā ʿAlīmu</p><p class="text-gray-700 mt-1 highlightable-text">O Gentle One, O All-Aware One, O All-Knowing One</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="qasaid-yaleetifan">
+        <div class="page" id="qasaid-yaleetifan" data-title="Qasida: Ya Lateefan">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Ya Lateefan lam yazal</h2>
                     <div class="space-y-6">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">يَا لَطِيفًا لَمْ يَزَلْ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Yā Laṭīfan lam yazal</p><p class="text-gray-700 mt-1">O Gentle One who remains forever</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">اُلْطُفْ بِنَا فِيمَا نَزَلْ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ulṭuf binā fīmā nazal</p><p class="text-gray-700 mt-1">Be gentle to us in all that befalls us</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">أَنْتَ اللَّطِيفُ لَمْ تَزَلْ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Anta-l Laṭīfu lam tazal</p><p class="text-gray-700 mt-1">You are constantly gentle</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">اُلْطُفْ بِنَا وَالْمُسْلِمِينَ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Ulṭuf binā wa-l muslimīn</p><p class="text-gray-700 mt-1">Treat us and the Muslims with gentleness</p></div>
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">يَا لَطِيفًا لَمْ يَزَلْ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Yā Laṭīfan lam yazal</p><p class="text-gray-700 mt-1 highlightable-text">O Gentle One who remains forever</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">اُلْطُفْ بِنَا فِيمَا نَزَلْ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ulṭuf binā fīmā nazal</p><p class="text-gray-700 mt-1 highlightable-text">Be gentle to us in all that befalls us</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">أَنْتَ اللَّطِيفُ لَمْ تَزَلْ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Anta-l Laṭīfu lam tazal</p><p class="text-gray-700 mt-1 highlightable-text">You are constantly gentle</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">اُلْطُفْ بِنَا وَالْمُسْلِمِينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ulṭuf binā wa-l muslimīn</p><p class="text-gray-700 mt-1 highlightable-text">Treat us and the Muslims with gentleness</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="qasaid-lailaha">
+        <div class="page" id="qasaid-lailaha" data-title="Qasida: La ilaha illa Allah">
             <div class="max-w-3xl mx-auto">
                  <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">La ilaha illa Allah</h2>
                     <div class="space-y-6">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">بِهَا يَثْبُتُ الْإِيمَانُ، بِهَا يَحْصُلُ الْأَمَانُ، كَرِّرْ أَيُّهَا الْإِنْسَانُ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Bihā yathbutu-l Īmān, bihā yaḥṣulu-l amān, karrir ayyuha-l insān: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1">Through it, faith is affirmed. Through it, safety is obtained. Repeat, O human: There is no god but Allah</p></div><hr class="border-emerald-100">
-                        </div>
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">بِهَا يَثْبُتُ الْإِيمَانُ، بِهَا يَحْصُلُ الْأَمَانُ، كَرِّرْ أَيُّهَا الْإِنْسَانُ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Bihā yathbutu-l Īmān, bihā yaḥṣulu-l amān, karrir ayyuha-l insān: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Through it, faith is affirmed. Through it, safety is obtained. Repeat, O human: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">جَمَعَتْ مَعْنَى التَّوْحِيدِ، وَدَلَّتْ بِلَا مَزِيدٍ، كَرِّرْ أَيُّهَا الْمُرِيدُ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Jamaʿat maʿna-t tawḥīd, wa dallat bilā mazīd, karrir ayyuha-l murīd: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">It gathers the meaning of Tawhid, and points to it without excess. Repeat, O seeker: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">تِكْرَارُهَا مَا أَحْلَاهُ، مَا أَبْهَاهُ، مَا أَعْلَاهُ، تُدْنِي الْعَبْدَ مِنْ مَوْلَاهُ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Tikrāruhā mā aḥlāh, mā abhāhu mā aʿlāh, tudni-l ʿabda min mawlāh: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Its repetition is so sweet! It is beautiful! It is glorious! It draws the servant closer to his Master: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">قَدْ أَتَانَا فِي الْأَخْبَارِ، عَنِ الْمُصْطَفَى الْمُخْتَارِ، أَنَّ أَفْضَلَ الْأَذْكَارِ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Qad atānā fi-l akhbār, ʿani-l Muṣṭafa-l Mukhtār, anna afḍala-l adhkār: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">It has indeed come to us in the narrations, from the Chosen One, the Select, that the best of remembrances is: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">قَدْ أَتَانَا فِي الْأُصُولِ، عَنِ النَّبِيِّ الرَّسُولِ، أَنَّ خَيْرَ مَا نَقُولُ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Qad atānā fi-l uṣūl, ʿani-n Nabiyyi-r Rasūl, anna khayra mā naqūl: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">It has reached us in the primary texts, from the Prophet, the Messenger, that the best that we can say is: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">هِيَ شِفَاءُ الصُّدُورِ، هِيَ نُورٌ عَلَىٰ نُورٍ، ذِكْرُ رَبِّكَ الْغَفُورِ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Hiya shifā'u-ṣ ṣudūr, hiya nūrun ʿalā nūr, dhikru Rabbika-l Ghafūr: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">It is a cure for the chests, it is light upon light, the remembrance of your Forgiving Lord: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَازِمُوهَا يَا إِخْوَانُ، نَوِّرُوا بِهَا الْجَنَانَ، إِنَّ مِفْتَاحَ الْجِنَانِ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lāzimūhā yā ikhwān, nawwirū biha-l janān, inna miftāḥa-l jinān: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Cling to it, O brethren! Illuminate the soul with it! Verily, the key to the Gardens is: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">هِيَ حِصْنُكَ الْحَصِينُ، هِيَ دِرْعُكَ الْمَتِينُ، ذِكْرُ رَبِّ الْعَالَمِينَ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Hiya ḥiṣnuka-l ḥaṣīn, hiya dirʿuka-l matīn, dhikru Rabbi-l ʿālamīn: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">It is your fortified fortress, it is your strong armor, the remembrance of the Lord of the worlds: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">ذَاكِرُهَا لَا يَشْقَى، لَا يَنَالُ فَرَقَا، هِيَ الْعُرْوَةُ الْوُثْقَى: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Dhākiruhā lā yashqā, lā yanālu faraqā, hiya-l ʿurwatu-l wuthqā: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">The one who mentions it will not be wretched, he will not face any terror, it is the firmest handhold: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">بِهَا الْفَوْزُ وَالنَّجَاةُ، فِيهَا كُلُّ الْبَرَكَاتِ، تُنْجِي مِنْ كُلِّ الْآفَاتِ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Bihā-l fawzu wa-n najāh, fīhā kullu-l barakāt, tunjī min kulli-l āfāt: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">In it is success and salvation, in it are all the blessings, it saves from all calamities: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا تَغْفَلْ عَنْهَا وَلَا، تَتْرُكْ تَنْزِيهَ الْمَوْلَىٰ، إِنَّ الْمَثَلَ الْأَعْلَىٰ: لَا إِلَٰهَ إِلَّا اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā taghfal ʿanhā walā, tatruk tanzīha-l Mawlā, inna-l mathala-l aʿlā: Lā ilāha illā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Do not be heedless of it, and do not leave the glorification of the Master, verily, the most sublime ideal is: There is no god but Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">لَا إِلَٰهَ إِلَّا اللَّهُ، لَا إِلَٰهَ إِلَّا اللَّهُ، مُحَمَّدٌ رَسُولُ اللَّهِ، عَلَيْهِ وَآلِهِ صَلَّى اللَّهُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Lā ilāha illā Allāh, Lā ilāha illā Allāh, Muḥammadun Rasūlullāh, ʿalayhi wa ālihi ṣallā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">There is no deity worthy of worship except Allah, There is no deity worthy of worship except Allah, Muhammad ﷺ is the Messenger of Allah, upon him and his family may Allah's blessings be</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">خَيْرُ الْخَلْقِ عِنْدَ اللَّهِ، صَاحِبُ الْعِزِّ وَالْجَاهِ، خَاتَمُ رُسُلِ الْإِلَٰهِ، مُحَمَّدٌ رَسُولُ اللَّهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Khayru-l khalqi ʿindallāh, ṣāḥibu-l ʿizzi wa-l jāh, khātamu rusuli-l Ilāh, Muḥammadur Rasūlullāh</p><p class="text-gray-700 mt-1 highlightable-text">The best of creation in the sight of Allah, the possessor of might and station, the seal of the Messengers of God, is Muhammad ﷺ, the Messenger of Allah</p></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="qasaid-muhammadiyyah">
+        <div class="page" id="qasaid-muhammadiyyah" data-title="Qasida: Al-Muhammadiyyah">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Al-Qasidatul Muhammadiyyah</h2>
                     <div class="space-y-6">
-                         <div><p class="arabic text-3xl text-right" dir="rtl">مُحَمَّدٌ خَيْرُ مَنْ يَمْشِي عَلَى قَدَمِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Muhammadun khayru man yamshī 'alā qadami</p><p class="text-gray-700 mt-1">Muhammad ﷺ is the best of those who walk on two feet</p></div><hr class="border-emerald-100">
-                         <div><p class="arabic text-3xl text-right" dir="rtl">مُحَمَّدٌ أَشْرَفُ الْأَعْرَابِ وَالْعَجَمِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Muhammadun ashraful a'rābi wal 'ajami</p><p class="text-gray-700 mt-1">Muhammad ﷺ is the noblest of Arabs and non-Arabs</p></div><hr class="border-emerald-100">
-                         </div>
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ خَيْرُ مَنْ يَمْشِي عَلَى قَدَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun khayru man yamshī 'alā qadami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the best of those who walk on two feet</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ أَشْرَفُ الْأَعْرَابِ وَالْعَجَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun ashraful a'rābi wal 'ajami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the noblest of Arabs and non-Arabs</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ بَاسِطُ الْمَعْرُوفِ جَامِعِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun bāsitul ma'rūfi jāmi'ihi</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the unsparing bestower of good</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ صَاحِبُ الْإِحْسَانِ وَالْكَرَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun sāhibul ihsāni wal karami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the possessor of excellence and nobility</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مَوْلَايَ صَلِّ وَسَلِّمْ دَائِمًا أَبَدًا ۰ عَلَى الْحَبِيْبِ وَآلِ الْبَيْتِ كُلِّهِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Mawlāya ṣalli wa sallim dā'iman abadā, 'alā-l Ḥabībi wa Āli-l Bayti kullihimi</p><p class="text-gray-700 mt-1 highlightable-text">O my Master, send prayers and peace always and forever, upon the Beloved and all the People of his Household.</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ تَاجُ رُسُلِ اللَّهِ قَاطِبَةٍ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun tāju Rusulillāhi qāṭibatin</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the crown of all the Messengers of God</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ صَادِقُ الْأَقْوَالِ وَالْكَلِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun sādiqul aqwāli wal kalimi</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is truthful in his sayings and his words</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ ثَابِتُ الْمِيثَاقِ حَافِظِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun thābitul mīthāqi ḥāfiẓihi</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is an upholder and protector of covenants</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ طَيِّبُ الْأَخْلَاقِ وَالشِّيَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun tayyibul akhlāqi wash-shiyami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is of pleasant character and disposition</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مَوْلَايَ صَلِّ وَسَلِّمْ دَائِمًا أَبَدًا ۰ عَلَى الْحَبِيْبِ وَآلِ الْبَيْتِ كُلِّهِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Mawlāya ṣalli wa sallim dā'iman abadā, 'alā-l Ḥabībi wa Āli-l Bayti kullihimi</p><p class="text-gray-700 mt-1 highlightable-text">O my Master, send prayers and peace always and forever, upon the Beloved and all the People of his Household.</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ جَاءَ بِالْآيَاتِ وَالْحِكَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun jā'a bil āyāti wal hikami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ came with Qur'anic verses and multiple wisdoms</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ دِينُهُ حَقٌّ نَدِينُ بِهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun dīnuhu haqqun nadīnu bihi</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad's ﷺ creed is a truth that we profess and adhere to</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ ذِكْرُهُ رَوْحٌ لِأَنْفُسِنَا</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun dhikruhu rawhun li anfusinā</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad's ﷺ remembrance is a respite for our souls</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ شُكْرُهُ فَرْضٌ عَلَى الْأُمَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun shukruhu fardun 'alal umami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad's ﷺ praise is obligatory upon all the nations</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مَوْلَايَ صَلِّ وَسَلِّمْ دَائِمًا أَبَدًا ۰ عَلَى الْحَبِيْبِ وَآلِ الْبَيْتِ كُلِّهِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Mawlāya ṣalli wa sallim dā'iman abadā, 'alā-l Ḥabībi wa Āli-l Bayti kullihimi</p><p class="text-gray-700 mt-1 highlightable-text">O my Master, send prayers and peace always and forever, upon the Beloved and all the People of his Household.</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ زِينَةُ الدُّنْيَا وَبَهْجَتُهَا</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun zīnatud dunyā wa bahjatuhā</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the beauty and adornment of this world</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ كَاشِفُ الْغُمَّاتِ وَالظُّلَمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun kāshiful ghummāti waz-zulami</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is a remover of afflictions and darkness</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ قَائِمٌ لِلَّهِ ذُو هِمَمٍ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun qā'imun lillāhi dhū himamin</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is dedicated to Allah, endowed with ambitions</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مُحَمَّدٌ خَاتَمٌ لِلرُّسُلِ كُلِّهِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Muhammadun khātamun lir-rusuli kullihimi</p><p class="text-gray-700 mt-1 highlightable-text">Muhammad ﷺ is the seal of every single last one of the messengers</p></div><hr class="border-emerald-100">
+                         <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">مَوْلَايَ صَلِّ وَسَلِّمْ دَائِمًا أَبَدًا ۰ عَلَى الْحَبِيْبِ وَآلِ الْبَيْتِ كُلِّهِمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Mawlāya ṣalli wa sallim dā'iman abadā, 'alā-l Ḥabībi wa Āli-l Bayti kullihimi</p><p class="text-gray-700 mt-1 highlightable-text">O my Master, send prayers and peace always and forever, upon the Beloved and all the People of his Household.</p></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="qasaid-malana">
+        <div class="page" id="qasaid-malana" data-title="Qasida: Ma Lana Mawlan">
             <div class="max-w-3xl mx-auto">
                 <div class="card p-6 md:p-8">
                     <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Ma Lana Mawlan Siwa Allah</h2>
                     <div class="space-y-6">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">اللَّهُ اللَّهُ اللَّهُ اللَّهُ مَا لَنَا مَوْلًى سِوَى اللَّهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Allāhu Allāhu Allāhu Allāh, mā lanā mawlan siwā Allāh</p><p class="text-gray-700 mt-1">Allah, Allah, Allah, Allah, we have no protector besides Allah</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">كُلَّمَا نَادَيْتُ يَا هُوَ | جَاءَنِي اللَّطْفُ مِنَ اللَّهِ</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Kullamā nādaytu yā Hū, jā'anī al-luṭfu min Allāh</p><p class="text-gray-700 mt-1">Whenever I would call upon 'The One,' His gentle grace would envelop me</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">أَقْبَلَ السَّاقِي عَلَيْنَا قَدَّمَ الْكَأْسَ إِلَيْنَا</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Aqbalas sāqī 'alaynā, qaddamal ka'sa ilaynā</p><p class="text-gray-700 mt-1">The cupbearer approached us, he presented the cup to us</p></div><hr class="border-emerald-100">
-                        <div><p class="arabic text-3xl text-right" dir="rtl">فَاحْتَسَيْنَا وَارْتَوَيْنَا مِنْ كُؤُوسِ الْهَاشِمِيَّة</p><p class="mt-3 text-emerald-800 bg-emerald-50 px-3 py-1 rounded-md inline-block">Faḥtasaynā wartawaynā, min ku'ūsi-l Hāshimiyyah</p><p class="text-gray-700 mt-1">We drank and were quenched from the Hashimi cups</p></div>
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">اللَّهُ اللَّهُ اللَّهُ اللَّهُ مَا لَنَا مَوْلًى سِوَى اللَّهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Allāhu Allāhu Allāhu Allāh, mā lanā mawlan siwā Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Allah, Allah, Allah, Allah, we have no protector besides Allah</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">كُلَّمَا نَادَيْتُ يَا هُوَ | جَاءَنِي اللَّطْفُ مِنَ اللَّهِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Kullamā nādaytu yā Hū, jā'anī al-luṭfu min Allāh</p><p class="text-gray-700 mt-1 highlightable-text">Whenever I would call upon 'The One,' His gentle grace would envelop me</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">أَقْبَلَ السَّاقِي عَلَيْنَا قَدَّمَ الْكَأْسَ إِلَيْنَا</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Aqbalas sāqī 'alaynā, qaddamal ka'sa ilaynā</p><p class="text-gray-700 mt-1 highlightable-text">The cupbearer approached us, he presented the cup to us</p></div><hr class="border-emerald-100">
+                        <div><p class="arabic text-3xl text-right highlightable-text" dir="rtl">فَاحْتَسَيْنَا وَارْتَوَيْنَا مِنْ كُؤُوسِ الْهَاشِمِيَّة</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Faḥtasaynā wartawaynā, min ku'ūsi-l Hāshimiyyah</p><p class="text-gray-700 mt-1 highlightable-text">We drank and were quenched from the Hashimi cups</p></div>
                     </div>
                 </div>
             </div>
@@ -233,13 +230,11 @@
     </div>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-200 shadow-lg z-10">
-        <div class="max-w-3xl mx-auto flex justify-between items-center p-2">
+        <div class="max-w-3xl mx-auto flex justify-between items-center px-4 py-2">
             <button id="prev-btn" class="p-3 rounded-full hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:hover:bg-transparent">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
             </button>
-            <button id="home-btn" class="p-3 rounded-full hover:bg-gray-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1V9a1 1 0 011-1h2a1 1 0 011 1v10a1 1 0 001 1zm-6 0h6" /></svg>
-            </button>
+            <div id="nav-dots" class="flex items-center space-x-2"></div>
             <button id="next-btn" class="p-3 rounded-full hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:hover:bg-transparent">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </button>
@@ -250,45 +245,39 @@
         const container = document.querySelector('.swipe-container');
         const pages = document.querySelectorAll('.page');
         const prevBtn = document.getElementById('prev-btn');
-        const homeBtn = document.getElementById('home-btn');
         const nextBtn = document.getElementById('next-btn');
-
+        const dotsContainer = document.getElementById('nav-dots');
+        const activeTitle = document.getElementById('active-section-title');
         let currentPageIndex = 0;
         const totalPages = pages.length;
-
+        pages.forEach((page, index) => {
+            const dot = document.createElement('button');
+            dot.classList.add('nav-dot');
+            dot.dataset.index = index;
+            dot.addEventListener('click', () => scrollToPage(index));
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.nav-dot');
+        function updateUI(index) {
+            activeTitle.innerText = pages[index].dataset.title || '';
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalPages - 1;
+            prevBtn.classList.toggle('opacity-50', index === 0);
+            nextBtn.classList.toggle('opacity-50', index === totalPages - 1);
+            dots.forEach((dot, dotIndex) => {
+                dot.classList.toggle('active', dotIndex === index);
+            });
+        }
         function scrollToPage(index) {
             const targetPage = pages[index];
             if (targetPage) {
-                container.scrollTo({
-                    left: targetPage.offsetLeft,
-                    behavior: 'smooth'
-                });
+                container.scrollTo({ left: targetPage.offsetLeft });
+                currentPageIndex = index;
+                updateUI(index);
             }
         }
-
-        function updateButtons() {
-            prevBtn.disabled = currentPageIndex === 0;
-            nextBtn.disabled = currentPageIndex === totalPages - 1;
-            prevBtn.classList.toggle('opacity-50', currentPageIndex === 0);
-            nextBtn.classList.toggle('opacity-50', currentPageIndex === totalPages - 1);
-        }
-
-        prevBtn.addEventListener('click', () => {
-            if (currentPageIndex > 0) {
-                scrollToPage(currentPageIndex - 1);
-            }
-        });
-
-        homeBtn.addEventListener('click', () => {
-            scrollToPage(0);
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentPageIndex < totalPages - 1) {
-                scrollToPage(currentPageIndex + 1);
-            }
-        });
-        
+        prevBtn.addEventListener('click', () => { if (currentPageIndex > 0) scrollToPage(currentPageIndex - 1); });
+        nextBtn.addEventListener('click', () => { if (currentPageIndex < totalPages - 1) scrollToPage(currentPageIndex + 1); });
         let scrollTimeout;
         container.addEventListener('scroll', () => {
             clearTimeout(scrollTimeout);
@@ -296,37 +285,28 @@
                 const newIndex = Math.round(container.scrollLeft / container.offsetWidth);
                 if (newIndex !== currentPageIndex) {
                     currentPageIndex = newIndex;
-                    updateButtons();
+                    updateUI(newIndex);
                 }
-            }, 100);
+            }, 150);
         });
-
-        // Add functionality to the Table of Contents links
         document.querySelectorAll('.toc-link').forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
                 const targetId = link.getAttribute('href').substring(1);
                 const targetIndex = Array.from(pages).findIndex(page => page.id === targetId);
-                if (targetIndex !== -1) {
-                    scrollToPage(targetIndex);
-                }
+                if (targetIndex !== -1) scrollToPage(targetIndex);
             });
         });
-
-        updateButtons();
+        updateUI(0);
     </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        })
-        .catch(error => {
-          console.log('ServiceWorker registration failed: ', error);
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => console.log('ServiceWorker registration successful.'))
+            .catch(error => console.log('ServiceWorker registration failed: ', error));
         });
-    });
-  }
-</script>
+      }
+    </script>
 </body>
 </html>
