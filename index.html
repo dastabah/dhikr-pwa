@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madina Institute Weekly Dhikr</title>
+    <title>Murid Companion</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,7 +35,7 @@
         .nav-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #d1d5db; /* gray-300 */ transition: background-color 0.2s ease-in-out; border: none; padding: 0; }
         .nav-dot.active { background-color: #059669; /* emerald-600 */ }
         
-        /* NEW TASBIH STYLES */
+        /* TASBIH STYLES */
         #tap-area {
             user-select: none; /* Prevents text selection on rapid taps */
             -webkit-user-select: none;
@@ -59,11 +60,12 @@
             <div class="max-w-3xl mx-auto">
                 <header class="text-center mb-10">
                     <img src="https://i.pinimg.com/1200x/9a/43/14/9a4314d66273d8fbe3c6aa5ebdc51471.jpg" alt="The Green Dome of the Prophet's Mosque" class="rounded-xl w-full shadow-lg mb-6">
-                    <h1 class="text-4xl md:text-5xl font-bold text-emerald-900 main-title">Madina Institute Weekly Dhikr</h1>
+                    <h1 class="text-4xl md:text-5xl font-bold text-emerald-900 main-title">Murid Companion</h1>
                 </header>
                 <main class="space-y-4">
                     <a href="#wird" class="toc-link text-white bg-emerald-700 hover:bg-emerald-800 text-center">Start Daily Wird</a>
                     <hr class="my-6 border-emerald-200">
+                    <h3 class="text-lg font-semibold text-gray-500 text-center mb-2">Weekly Majlis Litany</h3>
                     <a href="#fatihah" class="toc-link">Surah Al-Fatihah</a>
                     <a href="#istighfar" class="toc-link">Sayyidul Istighfar</a>
                     <a href="#adhkar" class="toc-link">Weekly Adhkar</a>
@@ -73,9 +75,6 @@
                     <a href="#qasaid-muhammadiyyah" class="toc-link">Qasida: Al-Qasidatul Muhammadiyyah</a>
                     <a href="#qasaid-malana" class="toc-link">Qasida: Ma Lana Mawlan</a>
                 </main>
-                <footer class="text-center mt-12 py-6 border-t border-emerald-100">
-                    <p class="text-gray-500 text-sm">May our gathering be accepted and blessed</p>
-                </footer>
             </div>
         </div>
 
@@ -101,43 +100,14 @@
             </div>
         </div>
 
-        <div class="page" id="fatihah" data-title="Surah Al-Fatihah">
-            <div class="max-w-3xl mx-auto">
-                <div class="card p-6 md:p-8">
-                    <h2 class="text-3xl border-b-2 border-emerald-100 pb-4 mb-6 text-emerald-900 section-title">Surah Al-Fatihah</h2>
-                    <div class="space-y-6">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(١) بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Bismillāhi-r-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1 highlightable-text">1. In the name of Allah, the Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٢) الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Alḥamdu lillāhi Rabbi-l-ʿālamīn</p><p class="text-gray-700 mt-1 highlightable-text">2. All praise is due to Allah, Lord of the worlds</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٣) الرَّحْمَٰنِ الرَّحِيمِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ar-Raḥmāni-r-Raḥīm</p><p class="text-gray-700 mt-1 highlightable-text">3. The Entirely Merciful, the Especially Merciful</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٤) مَالِكِ يَوْمِ الدِّينِ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Māliki yawmi-d-dīn</p><p class="text-gray-700 mt-1 highlightable-text">4. Sovereign of the Day of Recompense</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٥) إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Iyyāka naʿbudu wa iyyāka nastaʿīn</p><p class="text-gray-700 mt-1 highlightable-text">5. It is You we worship and You we ask for help</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٦) اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ihdinā-ṣ-ṣirāṭa-l-mustaqīm</p><p class="text-gray-700 mt-1 highlightable-text">6. Guide us to the straight path</p></div><hr class="border-emerald-100">
-                        <div class="verse"><p class="arabic text-3xl md:text-4xl text-right highlightable-text">(٧) صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</p><p class="mt-3 text-slate-700 bg-slate-100 px-3 py-1 rounded-md inline-block highlightable-text">Ṣirāṭa-lladhīna anʿamta ʿalayhim ghayri-l-maghḍūbi ʿalayhim wa la-ḍ-ḍāllīn</p><p class="text-gray-700 mt-1 highlightable-text">7. The path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who are astray</p></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page" id="istighfar" data-title="Sayyidul Istighfar">
-            </div>
-
-        <div class="page" id="adhkar" data-title="Weekly Adhkar">
-            </div>
-        
-        <div class="page" id="qasaid-latifiyyah" data-title="Qasida: The Latifiyyah">
-            </div>
-
-        <div class="page" id="qasaid-yaleetifan" data-title="Qasida: Ya Lateefan">
-            </div>
-
-        <div class="page" id="qasaid-lailaha" data-title="Qasida: La ilaha illa Allah">
-            </div>
-
-        <div class="page" id="qasaid-muhammadiyyah" data-title="Qasida: Al-Muhammadiyyah">
-            </div>
-
-        <div class="page" id="qasaid-malana" data-title="Qasida: Ma Lana Mawlan">
-            </div>
+        <div class="page" id="fatihah" data-title="Surah Al-Fatihah">...</div>
+        <div class="page" id="istighfar" data-title="Sayyidul Istighfar">...</div>
+        <div class="page" id="adhkar" data-title="Weekly Adhkar">...</div>
+        <div class="page" id="qasaid-latifiyyah" data-title="Qasida: The Latifiyyah">...</div>
+        <div class="page" id="qasaid-yaleetifan" data-title="Qasida: Ya Lateefan">...</div>
+        <div class="page" id="qasaid-lailaha" data-title="Qasida: La ilaha illa Allah">...</div>
+        <div class="page" id="qasaid-muhammadiyyah" data-title="Qasida: Al-Muhammadiyyah">...</div>
+        <div class="page" id="qasaid-malana" data-title="Qasida: Ma Lana Mawlan">...</div>
 
     </div>
 
@@ -180,7 +150,6 @@
             dots.forEach((dot, dotIndex) => {
                 dot.classList.toggle('active', dotIndex === index);
             });
-            // If the Daily Wird page becomes active, reset the counter
             if (pages[index].id === 'wird') {
                 resetWird();
             }
