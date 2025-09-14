@@ -10,234 +10,239 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles */
+        /* Base Styles */
         body { font-family: 'Inter', sans-serif; }
-        .arabic { font-family: 'Amiri', serif; line-height: 2.5; }
-        .card { background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .arabic { font-family: 'Amiri', serif; line-height: 2.0; }
         .main-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.05em; }
         .section-title { font-family: 'Amiri', serif; font-weight: 700; }
+        .page { display: flex; flex-direction: column; }
 
-        /* PWA LAYOUT STYLES */
-        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #FDFBF5; }
+        /* PWA Layout */
+        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #f9fafb; /* Lighter Gray */ }
         .swipe-container { display: flex; overflow-x: auto; width: 100vw; height: 100vh; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
-        .page { flex: 0 0 100vw; width: 100vw; height: 100vh; overflow-y: auto; scroll-snap-align: start; padding: 1rem; padding-top: 80px; /* Space for top header */ padding-bottom: 80px; /* Space for bottom nav */ }
+        .page-container { flex: 0 0 100vw; width: 100vw; height: 100vh; overflow-y: auto; scroll-snap-align: start; padding: 1rem; }
         .swipe-container::-webkit-scrollbar { display: none; }
         .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Table of Contents Link Styles */
-        .toc-link { display: block; padding: 1rem; background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 1.125rem; font-weight: 600; color: #1e3a8a; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
-        .toc-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+        /* Antechamber Styles */
+        .antechamber-bg { background-color: #111827; /* Deep Indigo/Gray */ color: white; }
+        .prompt { opacity: 0; transition: opacity 1s ease-in-out; }
+        .prompt.active { opacity: 1; }
+        .antechamber-button { background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s; }
+        .antechamber-button:hover { background-color: rgba(255, 255, 255, 0.2); }
 
-        /* HOVER HIGHLIGHT STYLE */
-        .highlightable-text:hover { background-color: #dcfce7; color: #14532d; cursor: pointer; border-radius: 6px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
-        
-        /* NAV DOTS STYLE */
-        .nav-dot { width: 8px; height: 8px; border-radius: 50%; background-color: #d1d5db; /* gray-300 */ transition: background-color 0.2s ease-in-out; border: none; padding: 0; }
-        .nav-dot.active { background-color: #059669; /* emerald-600 */ }
-        
-        /* TASBIH STYLES */
-        #tap-area {
-            user-select: none; /* Prevents text selection on rapid taps */
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent; /* Removes blue flash on tap on mobile */
-        }
-        #tap-area:active {
-            transform: scale(0.98); /* Gives a slight press-down effect */
-        }
+        /* Tasbih Mirror Styles */
+        #mirror-container { position: relative; width: 300px; height: 300px; border-radius: 50%; background: #1f2937; box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.5); overflow: hidden; cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+        #tarnish-overlay { position: absolute; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity 0.5s ease-out; opacity: 1; }
+        #divine-names-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; color: #f0f9ff; /* Light Sky Blue */ }
+        .divine-name { font-family: 'Amiri', serif; font-size: 3rem; opacity: 0.7; }
+        #mirror-container:active { transform: scale(0.98); }
+
+        /* Pool of Light Styles */
+        .pool-of-light-bg { background: radial-gradient(circle, #f0f9ff 0%, #e0f2fe 100%); }
+        .ripple { position: absolute; border-radius: 50%; border: 2px solid rgba(59, 130, 246, 0.5); opacity: 0; animation: ripple-effect 2s ease-out; }
+        @keyframes ripple-effect { from { transform: scale(0); opacity: 1; } to { transform: scale(1); opacity: 0; } }
+        .wisdom-drop { opacity: 0; animation: fade-in-out 8s ease-in-out; }
+        @keyframes fade-in-out { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <header class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm z-10">
-        <div class="max-w-3xl mx-auto text-center p-4">
-            <h2 id="active-section-title" class="text-xl font-semibold text-emerald-800 truncate"></h2>
-        </div>
-    </header>
-
     <div class="swipe-container">
 
-        <div class="page" id="home" data-title="Home">
-            <div class="max-w-3xl mx-auto">
-                <header class="text-center mb-10">
-                    <img src="https://i.pinimg.com/1200x/9a/43/14/9a4314d66273d8fbe3c6aa5ebdc51471.jpg" alt="The Green Dome of the Prophet's Mosque" class="rounded-xl w-full shadow-lg mb-6">
-                    <h1 class="text-4xl md:text-5xl font-bold text-emerald-900 main-title">Murid Companion</h1>
+        <div class="page-container" id="home">
+            <div class="max-w-3xl mx-auto page">
+                <header class="text-center">
+                    <img src="images/icon-512x512.png" alt="App Logo" class="rounded-3xl w-48 h-48 mx-auto shadow-lg mb-6">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 main-title">Murid Companion</h1>
                 </header>
-                <main class="space-y-4">
-                    <a href="#wird" class="toc-link text-white bg-emerald-700 hover:bg-emerald-800 text-center">Start Daily Wird</a>
-                    <hr class="my-6 border-emerald-200">
-                    <h3 class="text-lg font-semibold text-gray-500 text-center mb-2">Weekly Majlis Litany</h3>
-                    <a href="#fatihah" class="toc-link">Surah Al-Fatihah</a>
-                    <a href="#istighfar" class="toc-link">Sayyidul Istighfar</a>
-                    <a href="#adhkar" class="toc-link">Weekly Adhkar</a>
-                    <a href="#qasaid-latifiyyah" class="toc-link">Qasida: The Latifiyyah</a>
-                    <a href="#qasaid-yaleetifan" class="toc-link">Qasida: Ya Lateefan</a>
-                    <a href="#qasaid-lailaha" class="toc-link">Qasida: La ilaha illa Allah</a>
-                    <a href="#qasaid-muhammadiyyah" class="toc-link">Qasida: Al-Qasidatul Muhammadiyyah</a>
-                    <a href="#qasaid-malana" class="toc-link">Qasida: Ma Lana Mawlan</a>
+                <main class="space-y-4 mt-8">
+                    <a href="#antechamber" class="toc-link text-white bg-emerald-700 hover:bg-emerald-800 text-center font-bold text-2xl py-4">Start Daily Wird</a>
                 </main>
             </div>
         </div>
 
-        <div class="page" id="wird" data-title="Daily Wird">
-            <div class="max-w-3xl mx-auto flex flex-col h-full justify-between">
-                <div class="text-center p-4">
-                    <h2 id="dhikr-title" class="text-2xl font-bold text-emerald-800 mb-2"></h2>
-                    <p id="dhikr-arabic" class="arabic text-4xl my-4"></p>
-                    <p id="dhikr-transliteration" class="text-lg text-slate-700"></p>
+        <div class="page-container antechamber-bg" id="antechamber">
+            <div class="max-w-3xl mx-auto flex-grow flex flex-col items-center justify-center text-center p-4">
+                <div id="prompt-1" class="prompt active">
+                    <p class="text-2xl leading-relaxed mb-8">Peace begins with a body at ease.<br><span class="text-lg opacity-75">The Prophet ﷺ taught us that a focused heart is a free heart. Take a moment now to ensure you are comfortable, free from hunger or any pressing need.</span></p>
+                    <button id="prompt-1-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">I am ready</button>
                 </div>
-
-                <div id="tap-area" class="flex-grow flex items-center justify-center">
-                    <div class="w-64 h-64 bg-emerald-600 rounded-full flex flex-col items-center justify-center text-white shadow-xl cursor-pointer transition-transform duration-100 ease-in-out">
-                        <p id="current-count" class="text-7xl font-bold"></p>
-                        <p class="text-2xl opacity-75">of</p>
-                        <p id="total-count" class="text-3xl font-light opacity-75"></p>
-                    </div>
+                <div id="prompt-2" class="prompt hidden">
+                    <p class="text-2xl leading-relaxed mb-8">Now, turn your heart to your guide, Shaykh Muhammad.<br><span class="text-lg opacity-75">See him as your living link to a river of souls stretching back to the Messenger of Allah ﷺ. You are not alone; you are joining that river.</span></p>
+                    <button id="prompt-2-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">Connect my heart</button>
                 </div>
-
-                <div class="h-20 text-center p-4">
-                    <p id="completion-message" class="text-xl text-emerald-700 font-semibold"></p>
+                <div id="prompt-3" class="prompt hidden">
+                    <p class="text-2xl leading-relaxed mb-8">Your intention is your destination.<br><span class="text-lg opacity-75">Remember what this `wird` is for: a spiritual shower to cleanse, a sacred truth to strengthen, and a beautiful prayer to perfume your soul.</span></p>
+                    <button id="prompt-3-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">Begin the Wird</button>
                 </div>
             </div>
         </div>
 
-        <div class="page" id="fatihah" data-title="Surah Al-Fatihah">...</div>
-        <div class="page" id="istighfar" data-title="Sayyidul Istighfar">...</div>
-        <div class="page" id="adhkar" data-title="Weekly Adhkar">...</div>
-        <div class="page" id="qasaid-latifiyyah" data-title="Qasida: The Latifiyyah">...</div>
-        <div class="page" id="qasaid-yaleetifan" data-title="Qasida: Ya Lateefan">...</div>
-        <div class="page" id="qasaid-lailaha" data-title="Qasida: La ilaha illa Allah">...</div>
-        <div class="page" id="qasaid-muhammadiyyah" data-title="Qasida: Al-Muhammadiyyah">...</div>
-        <div class="page" id="qasaid-malana" data-title="Qasida: Ma Lana Mawlan">...</div>
+        <div class="page-container" id="wird">
+            <div class="max-w-3xl mx-auto flex flex-col h-full justify-between items-center text-center">
+                <div class="pt-4">
+                    <h2 id="dhikr-title" class="text-2xl font-bold text-gray-700"></h2>
+                </div>
+                
+                <div id="mirror-container">
+                    <div id="divine-names-container">
+                        <p id="divine-name-1" class="divine-name"></p>
+                        <p id="divine-name-2" class="divine-name"></p>
+                    </div>
+                    <div id="tarnish-overlay"></div>
+                </div>
 
-    </div>
-
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-200 shadow-lg z-10">
-        <div class="max-w-3xl mx-auto flex justify-between items-center px-4 py-2">
-            <button id="prev-btn" class="p-3 rounded-full hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:hover:bg-transparent">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-            </button>
-            <div id="nav-dots" class="flex items-center space-x-2"></div>
-            <button id="next-btn" class="p-3 rounded-full hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:hover:bg-transparent">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-            </button>
+                <div class="h-24 p-4 text-2xl font-semibold text-gray-800">
+                    <span id="current-count">0</span> / <span id="total-count">100</span>
+                    <p id="completion-message" class="text-xl text-emerald-700 font-semibold mt-2"></p>
+                </div>
+            </div>
         </div>
-    </nav>
+        
+    </div>
     
     <script>
-        // --- NAVIGATION LOGIC ---
-        const container = document.querySelector('.swipe-container');
-        const pages = document.querySelectorAll('.page');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const dotsContainer = document.getElementById('nav-dots');
-        const activeTitle = document.getElementById('active-section-title');
-        let currentPageIndex = 0;
-        const totalPages = pages.length;
-        pages.forEach((page, index) => {
-            const dot = document.createElement('button');
-            dot.classList.add('nav-dot');
-            dot.dataset.index = index;
-            dot.addEventListener('click', () => scrollToPage(index));
-            dotsContainer.appendChild(dot);
-        });
-        const dots = document.querySelectorAll('.nav-dot');
-        function updateUI(index) {
-            activeTitle.innerText = pages[index].dataset.title || '';
-            prevBtn.disabled = index === 0;
-            nextBtn.disabled = index === totalPages - 1;
-            prevBtn.classList.toggle('opacity-50', index === 0);
-            nextBtn.classList.toggle('opacity-50', index === totalPages - 1);
-            dots.forEach((dot, dotIndex) => {
-                dot.classList.toggle('active', dotIndex === index);
-            });
-            if (pages[index].id === 'wird') {
-                resetWird();
-            }
-        }
-        function scrollToPage(index) {
-            const targetPage = pages[index];
-            if (targetPage) {
-                container.scrollTo({ left: targetPage.offsetLeft });
-            }
-        }
-        prevBtn.addEventListener('click', () => { if (currentPageIndex > 0) scrollToPage(currentPageIndex - 1); });
-        nextBtn.addEventListener('click', () => { if (currentPageIndex < totalPages - 1) scrollToPage(currentPageIndex + 1); });
-        let scrollTimeout;
-        container.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                const newIndex = Math.round(container.scrollLeft / container.offsetWidth);
-                if (newIndex !== currentPageIndex) {
-                    currentPageIndex = newIndex;
-                    updateUI(newIndex);
-                }
-            }, 150);
-        });
-        document.querySelectorAll('.toc-link').forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetIndex = Array.from(pages).findIndex(page => page.id === targetId);
-                if (targetIndex !== -1) scrollToPage(targetIndex);
-            });
-        });
-
-        // --- TASBIH COUNTER LOGIC ---
+        // --- DATA ---
         const wirdSequence = [
-            { title: "Istighfar (Cleansing)", arabic: "أَسْتَغْفِرُ اللهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ", transliteration: "Astaghfirullāha-l-ʿAẓīm wa atūbu ilayh", target: 100 },
-            { title: "Tahlil (Strengthening)", arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ", transliteration: "Lā ilāha illā Allāh", target: 100 },
-            { title: "Salawat (Beautifying)", arabic: "اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا مُحَمَّدٍ النُّورِ وَآلِهِ", transliteration: "Allāhumma ṣalli ʿalā Sayyidinā Muḥammadin an-Nūr wa ālih", target: 100 }
+            { title: "Istighfar (Cleansing)", target: 100, names: ["Al-Ghaffar", "At-Tawwab"] },
+            { title: "Tahlil (Strengthening)", target: 100, names: ["Al-Ahad", "Al-Qayyum"] },
+            { title: "Salawat (Beautifying)", target: 100, names: ["Ar-Rahman", "Al-Wadud"] }
         ];
+        const wisdomQuotes = [
+            { quote: "He who knows himself knows his Lord. The greatest journey is the one taken into the landscape of your own soul.", attribution: "Imam al-Ghazali" },
+            { quote: "The dhikr is the polishing of the heart. The more you polish, the more it reflects the Divine.", attribution: "Prophetic Tradition" },
+            { quote: "Your remedy is within you, yet you do not perceive it.", attribution: "Sayyiduna Ali" }
+        ];
+
+        // --- ELEMENT SELECTORS ---
+        const container = document.querySelector('.swipe-container');
+        const pages = document.querySelectorAll('.page-container');
+        // Antechamber elements
+        const antechamberPrompts = [document.getElementById('prompt-1'), document.getElementById('prompt-2'), document.getElementById('prompt-3')];
+        const antechamberBtns = [document.getElementById('prompt-1-btn'), document.getElementById('prompt-2-btn'), document.getElementById('prompt-3-btn')];
+        // Tasbih elements
+        const wirdPage = document.getElementById('wird');
         const dhikrTitleEl = document.getElementById('dhikr-title');
-        const dhikrArabicEl = document.getElementById('dhikr-arabic');
-        const dhikrTransliterationEl = document.getElementById('dhikr-transliteration');
-        const tapAreaEl = document.getElementById('tap-area');
+        const mirrorContainer = document.getElementById('mirror-container');
+        const tarnishOverlay = document.getElementById('tarnish-overlay');
+        const divineName1El = document.getElementById('divine-name-1');
+        const divineName2El = document.getElementById('divine-name-2');
         const currentCountEl = document.getElementById('current-count');
         const totalCountEl = document.getElementById('total-count');
         const completionMessageEl = document.getElementById('completion-message');
+
+        let currentPageIndex = 0;
         let wirdIndex = 0;
         let currentCount = 0;
+
+        // --- NAVIGATION ---
+        function scrollToPage(id) {
+            const targetPage = document.getElementById(id);
+            if(targetPage) {
+                targetPage.scrollIntoView({ behavior: 'smooth' });
+                // Note: Full nav logic (dots, etc) would be here
+            }
+        }
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToPage(targetId);
+            });
+        });
+
+        // --- ANTECHAMBER LOGIC ---
+        let currentPrompt = 0;
+        antechamberBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                antechamberPrompts[index].classList.remove('active');
+                antechamberPrompts[index].classList.add('hidden');
+                
+                currentPrompt++;
+                if (currentPrompt < antechamberPrompts.length) {
+                    antechamberPrompts[currentPrompt].classList.remove('hidden');
+                    antechamberPrompts[currentPrompt].classList.add('active');
+                } else {
+                    scrollToPage('wird');
+                    resetWird();
+                }
+            });
+        });
+
+        // --- TASBIH LOGIC ---
         function updateDhikrUI() {
             if (wirdIndex < wirdSequence.length) {
                 const currentDhikr = wirdSequence[wirdIndex];
                 dhikrTitleEl.innerText = currentDhikr.title;
-                dhikrArabicEl.innerText = currentDhikr.arabic;
-                dhikrTransliterationEl.innerText = currentDhikr.transliteration;
+                divineName1El.innerText = currentDhikr.names[0];
+                divineName2El.innerText = currentDhikr.names[1];
                 currentCountEl.innerText = currentCount;
                 totalCountEl.innerText = currentDhikr.target;
                 completionMessageEl.innerText = '';
-                tapAreaEl.style.cursor = 'pointer';
+                tarnishOverlay.style.opacity = 1;
             } else {
-                dhikrTitleEl.innerText = "Completed";
-                dhikrArabicEl.innerText = "ما شاء الله";
-                dhikrTransliterationEl.innerText = "Masha'Allah";
-                currentCountEl.innerText = '✓';
-                totalCountEl.innerText = '';
-                completionMessageEl.innerText = "Your daily wird is complete. May it be accepted!";
-                tapAreaEl.style.cursor = 'default';
+                // --- HUDOOR PHASE (POOL OF LIGHT) ---
+                dhikrTitleEl.innerText = '';
+                mirrorContainer.style.transition = 'opacity 1s ease-out';
+                mirrorContainer.style.opacity = 0;
+                wirdPage.classList.add('pool-of-light-bg');
+                
+                completionMessageEl.innerText = "Dhikr complete. Remain in presence.";
+                
+                // Show ripples of wisdom
+                let wisdomIndex = 0;
+                const showWisdom = setInterval(() => {
+                    if (wisdomIndex >= wisdomQuotes.length) {
+                        clearInterval(showWisdom);
+                        return;
+                    }
+                    const ripple = document.createElement('div');
+                    ripple.classList.add('ripple');
+                    wirdPage.appendChild(ripple);
+                    ripple.addEventListener('animationend', () => ripple.remove());
+
+                    const wisdomText = document.createElement('p');
+                    wisdomText.classList.add('wisdom-drop', 'text-2xl', 'text-center', 'text-blue-800', 'absolute', 'p-4');
+                    wisdomText.innerText = `"${wisdomQuotes[wisdomIndex].quote}"\n- ${wisdomQuotes[wisdomIndex].attribution}`;
+                    wirdPage.appendChild(wisdomText);
+                    wisdomText.addEventListener('animationend', () => wisdomText.remove());
+
+                    wisdomIndex++;
+                }, 8000);
             }
         }
+
         function handleTap() {
             if (wirdIndex >= wirdSequence.length) return;
             currentCount++;
+            const target = wirdSequence[wirdIndex].target;
+            const polishPercentage = currentCount / target;
+            
+            tarnishOverlay.style.opacity = 1 - polishPercentage;
             currentCountEl.innerText = currentCount;
+
             if (navigator.vibrate) { navigator.vibrate(50); }
-            if (currentCount >= wirdSequence[wirdIndex].target) {
+
+            if (currentCount >= target) {
                 wirdIndex++;
                 currentCount = 0;
                 if (navigator.vibrate) navigator.vibrate([100, 30, 100]);
-                setTimeout(updateDhikrUI, 600);
+                setTimeout(updateDhikrUI, 1200); // Pause to appreciate the clear mirror
             }
         }
+        
         function resetWird() {
-             wirdIndex = 0;
-             currentCount = 0;
-             updateDhikrUI();
+            wirdIndex = 0;
+            currentCount = 0;
+            wirdPage.classList.remove('pool-of-light-bg');
+            mirrorContainer.style.opacity = 1;
+            updateDhikrUI();
         }
-        tapAreaEl.addEventListener('click', handleTap);
+
+        mirrorContainer.addEventListener('click', handleTap);
         
         // --- INITIALIZE ---
-        updateUI(0);
         resetWird();
     </script>
 </body>

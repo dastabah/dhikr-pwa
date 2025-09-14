@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* ... existing styles ... */
+        
+        /* NEW INKWELL & DROPLET STYLES */
+        #inkwell-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+        #inkwell-svg {
+            width: 250px;
+            height: 250px;
+            transition: transform 0.1s ease-in-out;
+        }
+        #inkwell-container:active #inkwell-svg {
+            transform: scale(0.98); /* Press-down effect */
+        }
+        .ink-droplet {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #3b82f6; /* Madina Blue */
+            border-radius: 50% 50% 50% 0; /* Teardrop shape */
+            transform: rotate(45deg);
+            opacity: 0;
+            animation: floatUp 2s ease-out forwards;
+            box-shadow: 0 0 10px #3b82f6, 0 0 15px #3b82f6;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(45deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotate(45deg) scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="swipe-container">
+        <div class="page" id="wird" data-title="Daily Wird">
+            <div class="max-w-3xl mx-auto flex flex-col h-full justify-between">
+                <div class="text-center pt-4">
+                    </div>
+
+                <div id="inkwell-container" class="flex-grow">
+                    <div class="relative w-64 h-64 flex items-center justify-center">
+                        <svg id="inkwell-svg" viewBox="0 0 100 100" xmlns="http://www.w.org/2000/svg">
+                            <path d="M85,60 C85,75 75,85 60,85 L40,85 C25,85 15,75 15,60 L15,50 C25,48 30,45 35,40 L65,40 C70,45 75,48 85,50 Z" fill="#374151" />
+                            <rect x="30" y="30" width="40" height="10" rx="5" fill="#4b5563" />
+                            <path d="M35,65 C45,75 55,75 65,65" stroke="#60a5fa" stroke-width="2" fill="none" />
+                        </svg>
+                        <div id="counter-text" class="absolute text-center">
+                            <p id="current-count" class="text-6xl font-bold text-slate-100"></p>
+                            <p id="total-count" class="text-xl font-light text-slate-300"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-20 text-center p-4">
+                    <p id="completion-message" class="text-xl text-emerald-700 font-semibold"></p>
+                </div>
+            </div>
+        </div>
+        </div>
+    <script>
+        // --- NAVIGATION LOGIC (Unchanged) ---
+        // ...
+        
+        // --- TASBIH COUNTER LOGIC ---
+        // ... (wirdSequence definition) ...
+        const inkwellContainer = document.getElementById('inkwell-container');
+        // ... (other element selections) ...
+        
+        function updateDhikrUI() {
+            // ... existing update logic, but without color changes to the main element ...
+            if (wirdIndex < wirdSequence.length) {
+                // ...
+                currentCountEl.style.display = 'block';
+                totalCountEl.style.display = 'block';
+            } else {
+                // ... completion state ...
+                currentCountEl.innerText = '✓';
+                totalCountEl.style.display = 'none';
+            }
+        }
+
+        function handleTap() {
+            if (wirdIndex >= wirdSequence.length) return;
+            currentCount++;
+            currentCountEl.innerText = currentCount;
+            if (navigator.vibrate) { navigator.vibrate(50); }
+
+            // Create and animate the droplet
+            const droplet = document.createElement('div');
+            droplet.classList.add('ink-droplet');
+            const currentDhikr = wirdSequence[wirdIndex];
+            droplet.style.backgroundColor = currentDhikr.color; // Thematic color
+            droplet.style.boxShadow = `0 0 10px ${currentDhikr.color}, 0 0 15px ${currentDhikr.color}`;
+            inkwellContainer.appendChild(droplet);
+            
+            // Clean up the droplet element after the animation finishes
+            droplet.addEventListener('animationend', () => {
+                droplet.remove();
+            });
+
+            const target = wirdSequence[wirdIndex].target;
+            if (currentCount >= target) {
+                wirdIndex++;
+                currentCount = 0;
+                if (navigator.vibrate) navigator.vibrate([100, 30, 100]);
+                setTimeout(updateDhikrUI, 800);
+            }
+        }
+
+        function resetWird() {
+            wirdIndex = 0;
+            currentCount = 0;
+            updateDhikrUI();
+        }
+
+        inkwellContainer.addEventListener('click', handleTap);
+        
+        // --- INITIALIZE ---
+        // ...
+    </script>
+</body>
+</html>
