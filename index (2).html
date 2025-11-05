@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Zawiya</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body { font-family: 'Inter', sans-serif; }
+        .main-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.05em; }
+        .arabic { font-family: 'Amiri', serif; }
+
+        /* PWA Layout */
+        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #f9fafb; }
+        .page-container { width: 100vw; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .page-container.hidden { display: none; }
+
+        /* Home Page Styles */
+        .toc-link { display: block; padding: 1rem; background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 1.125rem; font-weight: 600; color: #1e3a8a; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .toc-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+        /* Antechamber Styles */
+        #antechamber { background-color: #111827; color: white; position: fixed; top: 0; left: 0; z-index: 50; }
+        .prompt { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
+        .antechamber-button { background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s; }
+        .antechamber-button:hover { background-color: rgba(255, 255, 255, 0.2); }
+        .is-fading-out { animation: fade-out 0.5s forwards; }
+        .is-fading-in { animation: fade-in 0.5s forwards; }
+        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Tasbih - Luminous Pearl Styles */
+        #wird { background: #f4f2f7; background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.02) 1px, transparent 0); background-size: 20px 20px; }
+        #pearl-container { user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+        #pearl { width: 250px; height: 250px; background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f0f2f5 50%, #d1d9e6 100%); border-radius: 50%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 -5px 15px rgba(0,0,0,0.1), inset 0 5px 15px rgba(255,255,255,0.9); transition: transform 0.1s ease-out; }
+        #pearl-container:active #pearl { transform: scale(0.98); }
+        .ripple { fill: none; stroke: rgba(100, 116, 139, 0.5); animation: ripple-effect 2s ease-out forwards; }
+        @keyframes ripple-effect { from { r: 125; stroke-opacity: 0.8; stroke-width: 1.5; } to { r: 250; stroke-opacity: 0; stroke-width: 0; } }
+        .kufic-text { font-family: 'Amiri', serif; font-size: 48px; fill: #475569; text-anchor: middle; opacity: 0; animation: kufic-reveal 4s ease-in-out forwards; }
+        @keyframes kufic-reveal { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="page-container" id="home"> </div>
+    <div class="page-container hidden" id="antechamber"> </div>
+
+    <div class="page-container hidden" id="wird">
+        <div class="max-w-3xl mx-auto flex flex-col h-full justify-between items-center text-center">
+            <div class="pt-4 h-24">
+                <h2 id="dhikr-title" class="text-2xl font-bold text-gray-700 is-fading-in"></h2>
+            </div>
+            
+            <div id="pearl-container" class="flex-grow flex items-center justify-center cursor-pointer">
+                <div class="relative w-64 h-64 flex items-center justify-center">
+                    <div id="pearl"></div>
+                    <svg id="animation-svg" class="absolute w-full h-full" viewBox="0 0 500 500" style="overflow: visible;"></svg>
+                </div>
+            </div>
+
+            <div class="h-20 p-4">
+                <p id="completion-message" class="text-xl text-emerald-700 font-semibold"></p>
+                <button id="back-to-home-btn" class="toc-link text-sm py-2 px-4 hidden">Return Home</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- DATA & STATE ---
+        const wirdStages = [
+            { name: "Cleansing", milestones: { 33: "ٱلْغَفَّار", 66: "ٱلتَّوَّاب", 99: "ٱلْعَفُوّ" } },
+            { name: "Strengthening", milestones: { 33: "ٱلْأَحَد", 66: "ٱلصَّمَد", 99: "ٱلْحَىُّ" } },
+            { name: "Beautifying", milestones: { 33: "ٱلرَّحْمَة", 66: "ٱلنُّور", 99: "مُحَمَّد ﷺ" } }
+        ];
+        let wirdStageIndex = 0;
+        let currentCount = 0;
+
+        // --- ELEMENT SELECTORS ---
+        const homePage = document.getElementById('home');
+        const antechamberPage = document.getElementById('antechamber');
+        const wirdPage = document.getElementById('wird');
+        const startWirdBtn = document.getElementById('start-wird-btn');
+        const backToHomeBtn = document.getElementById('back-to-home-btn');
+        const dhikrTitleEl = document.getElementById('dhikr-title');
+        const pearlContainer = document.getElementById('pearl-container');
+        const animationSvg = document.getElementById('animation-svg');
+        const completionMessageEl = document.getElementById('completion-message');
+
+        // --- ANTECHAMBER LOGIC --- (To be re-integrated)
+
+        // --- PAGE NAVIGATION ---
+        function showPage(pageId) { /* ... navigation logic ... */ }
+        
+        // --- TASBIH LOGIC ---
+        function updateDhikrUI() {
+            dhikrTitleEl.classList.remove('is-fading-in');
+            dhikrTitleEl.classList.add('is-fading-out');
+
+            setTimeout(() => {
+                if (wirdStageIndex < wirdStages.length) {
+                    dhikrTitleEl.innerText = wirdStages[wirdStageIndex].name;
+                    completionMessageEl.innerText = '';
+                    backToHomeBtn.classList.add('hidden');
+                    pearlContainer.style.pointerEvents = 'auto';
+                } else {
+                    dhikrTitleEl.innerText = "Completed";
+                    completionMessageEl.innerText = "Your daily practice is complete. May it be accepted.";
+                    backToHomeBtn.classList.remove('hidden');
+                    pearlContainer.style.pointerEvents = 'none';
+                }
+                dhikrTitleEl.classList.remove('is-fading-out');
+                dhikrTitleEl.classList.add('is-fading-in');
+            }, 500);
+        }
+
+        function createRipple() { /* ... creates ripple ... */ }
+        function revealKuficName(name) { /* ... reveals Kufic name ... */ }
+        function stageCompletePulse() { /* ... creates pulse ... */ }
+
+        function handleTap() {
+            if (wirdStageIndex >= wirdStages.length) return;
+
+            createRipple();
+            if (navigator.vibrate) { navigator.vibrate(10); }
+            currentCount++;
+            
+            const currentStage = wirdStages[wirdStageIndex];
+            if (currentStage.milestones[currentCount]) {
+                revealKuficName(currentStage.milestones[currentCount]);
+            }
+
+            if (currentCount >= 100) {
+                stageCompletePulse();
+                if (navigator.vibrate) { navigator.vibrate([100, 50, 100]); }
+                currentCount = 0;
+                wirdStageIndex++;
+                updateDhikrUI();
+            }
+        }
+        
+        // --- Re-integrate full script logic here ---
+        // For brevity, the full JS for navigation and animations is omitted,
+        // but it should be merged from the previous working version.
+        // This is a structural and stylistic foundation.
+        
+    </script>
+</body>
+</html>

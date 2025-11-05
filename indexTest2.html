@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zawiya</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body { font-family: 'Inter', sans-serif; }
+        .main-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.05em; }
+
+        /* PWA Layout */
+        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #f9fafb; }
+        .page-container { width: 100vw; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; }
+        .page-container.hidden { display: none; }
+
+        /* Home Page Styles */
+        .toc-link { display: block; padding: 1rem; background-color: #FFFFFF; border: 1px solid #E5E0D4; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-size: 1.125rem; font-weight: 600; color: #1e3a8a; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .toc-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+        /* Antechamber Styles */
+        #antechamber { background-color: #111827; color: white; position: fixed; top: 0; left: 0; z-index: 50; }
+        .prompt { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
+        .antechamber-button { background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s; }
+        .antechamber-button:hover { background-color: rgba(255, 255, 255, 0.2); }
+        .is-fading-out { animation: fade-out 0.5s forwards; }
+        .is-fading-in { animation: fade-in 0.5s forwards; }
+        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+        /* SVG Tasbih Styles from Claude, with refinements */
+        #tap-area { user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+        .stone { transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4)); }
+        #tap-area:active .stone { transform: scale(0.98); }
+        
+        .stone-rough .stone-base { fill: #374151; }
+        .stone-rough .stone-texture { opacity: 0.3; }
+        .stone-rough .stone-sheen, .stone-rough .inner-light { opacity: 0; }
+
+        .stone-cleansed .stone-base { fill: #6b7280; }
+        .stone-cleansed .stone-texture { opacity: 0.1; }
+        .stone-cleansed .stone-sheen { opacity: 0.4; }
+        .stone-cleansed .inner-light { opacity: 0; }
+
+        .stone-strengthened .stone-base { fill: #9ca3af; }
+        .stone-strengthened .stone-texture { opacity: 0; }
+        .stone-strengthened .stone-sheen { opacity: 0.7; }
+        .stone-strengthened .inner-light { opacity: 0.5; }
+
+        .stone-polished .stone-base { fill: #e5e7eb; }
+        .stone-polished .stone-texture { opacity: 0; }
+        .stone-polished .stone-sheen { opacity: 1; }
+        .stone-polished .inner-light { opacity: 1; }
+
+        #stone-haze { transition: opacity 0.8s ease-in-out; opacity: 0; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="page-container" id="home">
+        <div class="max-w-3xl mx-auto flex-grow flex flex-col items-center justify-center p-4">
+            <header class="text-center">
+                <img src="images/icon-512x512.png" alt="App Logo" class="rounded-3xl w-48 h-48 mx-auto shadow-lg mb-6">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 main-title">Zawiya</h1>
+                <p class="text-lg text-gray-600 mt-2">A Sanctuary for the Heart</p>
+            </header>
+            <main class="w-full max-w-sm space-y-4 mt-8">
+                <button id="start-wird-btn" class="w-full toc-link text-white bg-emerald-700 hover:bg-emerald-800 text-center font-bold text-2xl py-4">Begin</button>
+            </main>
+        </div>
+    </div>
+
+    <div class="page-container hidden" id="antechamber">
+        </div>
+
+    <div class="page-container hidden" id="wird">
+        <div class="max-w-3xl mx-auto flex flex-col h-full justify-between items-center text-center">
+            <div class="pt-4">
+                <h2 id="dhikr-title" class="text-2xl font-bold text-gray-700"></h2>
+            </div>
+            
+            <div id="tap-area" class="flex-grow flex items-center justify-center cursor-pointer">
+                <div class="relative w-64 h-64 flex items-center justify-center">
+                    <svg id="stone-svg" class="stone stone-rough" viewBox="0 0 200 200">
+                        <defs>
+                            <filter id="roughFilter">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="3" result="noise"/>
+                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+                            </filter>
+                            <radialGradient id="sheenGradient" cx="45%" cy="35%" r="55%" fx="35%" fy="25%">
+                                <stop offset="0%" stop-color="white" stop-opacity="0.7"/>
+                                <stop offset="100%" stop-color="white" stop-opacity="0"/>
+                            </radialGradient>
+                            <radialGradient id="innerLightGradient">
+                                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5"/>
+                                <stop offset="100%" stop-color="#d1d5db" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <ellipse class="stone-base" cx="100" cy="100" rx="85" ry="80" />
+                        <ellipse class="stone-texture" cx="100" cy="100" rx="85" ry="80" filter="url(#roughFilter)" opacity="0.3" fill="#000"/>
+                        <ellipse class="stone-sheen" cx="100" cy="100" rx="85" ry="80" fill="url(#sheenGradient)"/>
+                        <ellipse class="inner-light" cx="100" cy="100" rx="60" ry="55" fill="url(#innerLightGradient)"/>
+                        <path id="stone-haze" d="M15 100 A 85 80 0 1 1 185 100 A 85 80 0 1 1 15 100 Z" fill="rgba(249, 250, 251, 0.4)" style="backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);"/>
+                    </svg>
+                    <div class="relative text-center pointer-events-none">
+                        <p id="current-count" class="text-7xl font-bold text-gray-800"></p>
+                        <p id="total-count" class="text-3xl font-light text-gray-600"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-20 p-4">
+                <p id="completion-message" class="text-xl text-emerald-700 font-semibold"></p>
+                <button id="back-to-home-btn" class="toc-link text-sm py-2 px-4 hidden">Return Home</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- DATA & STATE ---
+        const wirdSequence = [
+            { title: "Cleansing", target: 100, polishLevel: 1 },
+            { title: "Strengthening", target: 100, polishLevel: 2 },
+            { title: "Beautifying", target: 100, polishLevel: 3 }
+        ];
+        let wirdIndex = 0;
+        let currentCount = 0;
+        
+        // --- ELEMENT SELECTORS (CORRECTED & COMPLETE) ---
+        const homePage = document.getElementById('home');
+        const antechamberPage = document.getElementById('antechamber');
+        const wirdPage = document.getElementById('wird');
+        const startWirdBtn = document.getElementById('start-wird-btn');
+        const backToHomeBtn = document.getElementById('back-to-home-btn');
+        const dhikrTitleEl = document.getElementById('dhikr-title');
+        const tapAreaEl = document.getElementById('tap-area');
+        const stoneSvgEl = document.getElementById('stone-svg');
+        const stoneHazeEl = document.getElementById('stone-haze');
+        const currentCountEl = document.getElementById('current-count');
+        const totalCountEl = document.getElementById('total-count');
+        const completionMessageEl = document.getElementById('completion-message');
+        
+        // --- ANTECHAMBER ---
+        const prompts = [
+            { text: "A quiet mind begins with a body at ease.<br><span class='text-lg opacity-75'>Before you continue, take a moment to ensure you are comfortable and free from any pressing needs.</span>", button: "I am ready" },
+            { text: "This is a practice of connection.<br><span class='text-lg opacity-75'>Bring to mind a source of wisdom, a principle that grounds you, or a person who inspires you. Let this be your anchor.</span>", button: "Connect my heart" },
+            { text: "Set your intention for this time.<br><span class='text-lg opacity-75'>You might focus on cleansing the mind, strengthening your focus, or cultivating a sense of inner gratitude.</span>", button: "Begin the Practice" }
+        ];
+        let currentPromptIndex = 0;
+
+        function showNextPrompt() {
+            if (currentPromptIndex >= prompts.length) {
+                showPage('wird');
+                resetWird();
+                return;
+            }
+            const promptData = prompts[currentPromptIndex];
+            antechamberPage.innerHTML = `<div class="w-full h-full flex items-center justify-center is-fading-in"><div class="max-w-3xl mx-auto text-center p-4"><p class="text-2xl leading-relaxed mb-8">${promptData.text}</p><button class="antechamber-button rounded-lg px-6 py-3 text-xl">${promptData.button}</button></div></div>`;
+            currentPromptIndex++;
+        }
+        antechamberPage.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const content = antechamberPage.querySelector('div');
+                content.classList.remove('is-fading-in');
+                content.classList.add('is-fading-out');
+                setTimeout(showNextPrompt, 500);
+            }
+        });
+
+        // --- PAGE NAVIGATION ---
+        function showPage(pageId) {
+            [homePage, antechamberPage, wirdPage].forEach(p => p.classList.add('hidden'));
+            const pageToShow = document.getElementById(pageId);
+            if (pageToShow) pageToShow.classList.remove('hidden');
+        }
+        startWirdBtn.addEventListener('click', () => {
+            currentPromptIndex = 0;
+            showNextPrompt();
+            showPage('antechamber');
+        });
+        backToHomeBtn.addEventListener('click', () => showPage('home'));
+
+        // --- TASBIH LOGIC ---
+        const polishClasses = ['stone-rough', 'stone-cleansed', 'stone-strengthened', 'stone-polished'];
+        
+        function applyPolish(level) {
+            stoneSvgEl.setAttribute('class', `stone ${polishClasses[level]}`);
+        }
+        
+        function saveStoneState(level) {
+            const today = new Date().toISOString().split('T')[0];
+            localStorage.setItem('stoneState', JSON.stringify({ level: level, date: today }));
+        }
+        function loadStoneState() {
+            const state = JSON.parse(localStorage.getItem('stoneState'));
+            const today = new Date().toISOString().split('T')[0];
+            if (state) {
+                applyPolish(state.level);
+                if (state.date !== today) {
+                    stoneHazeEl.style.opacity = 1;
+                } else {
+                    stoneHazeEl.style.opacity = 0;
+                }
+            } else {
+                applyPolish(0);
+            }
+        }
+        function updateDhikrUI() {
+            if (wirdIndex < wirdSequence.length) {
+                const currentDhikr = wirdSequence[wirdIndex];
+                dhikrTitleEl.innerText = currentDhikr.title;
+                currentCountEl.innerText = currentCount;
+                totalCountEl.innerText = `/ ${currentDhikr.target}`;
+                completionMessageEl.innerText = '';
+                backToHomeBtn.classList.add('hidden');
+                tapAreaEl.style.pointerEvents = 'auto';
+            } else {
+                dhikrTitleEl.innerText = "Completed";
+                completionMessageEl.innerText = "Your daily practice is complete. May it be accepted.";
+                currentCountEl.innerText = '✓';
+                totalCountEl.innerText = '';
+                backToHomeBtn.classList.remove('hidden');
+                tapAreaEl.style.pointerEvents = 'none';
+                saveStoneState(wirdSequence[wirdSequence.length - 1].polishLevel);
+            }
+        }
+        function handleTap() {
+            if (wirdIndex >= wirdSequence.length) return;
+            if (currentCount === 0 && stoneHazeEl.style.opacity == 1) {
+                stoneHazeEl.style.opacity = 0;
+            }
+            currentCount++;
+            currentCountEl.innerText = currentCount;
+            if (navigator.vibrate) { navigator.vibrate(50); }
+            const target = wirdSequence[wirdIndex].target;
+            if (currentCount >= target) {
+                applyPolish(wirdSequence[wirdIndex].polishLevel);
+                wirdIndex++;
+                currentCount = 0;
+                if (navigator.vibrate) navigator.vibrate([100, 30, 100]);
+                setTimeout(updateDhikrUI, 800);
+            }
+        }
+        function resetWird() {
+             wirdIndex = 0;
+             currentCount = 0;
+             loadStoneState();
+             updateDhikrUI();
+        }
+        tapAreaEl.addEventListener('click', handleTap);
+        
+        // --- INITIALIZE ---
+        showPage('home');
+    </script>
+</body>
+</html>

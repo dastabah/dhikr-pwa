@@ -1,0 +1,23 @@
+{
+  "name": "digital-zawiya-pwa",
+  "version": "1.0.0",
+  "description": "A Progressive Web App for spiritual practice and learning",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -l 3000",
+    "build": "echo 'No build step required - static PWA'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "pwa",
+    "spiritual",
+    "dhikr",
+    "islamic",
+    "education"
+  ],
+  "author": "Digital Zawiya",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

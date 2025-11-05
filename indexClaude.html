@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Zawiya - The Wellspring and the Sandal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #tasbih-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at center, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(0, 0, 0, 1) 70%);
+        }
+
+        #pool-canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        #pool-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            mix-blend-mode: screen;
+        }
+
+        /* Shimmering pool animation */
+        @keyframes shimmer {
+            0%, 100% { 
+                opacity: 0.7;
+                filter: brightness(1);
+            }
+            25% { 
+                opacity: 0.75;
+                filter: brightness(1.05);
+            }
+            50% { 
+                opacity: 0.8;
+                filter: brightness(1.1);
+            }
+            75% { 
+                opacity: 0.75;
+                filter: brightness(1.05);
+            }
+        }
+
+        .pool-surface {
+            animation: shimmer 6s ease-in-out infinite;
+        }
+
+        /* Sandal imprint - subtle and ethereal */
+        .sandal-imprint {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.15);
+            stroke-width: 0.5;
+            filter: blur(0.3px);
+            mix-blend-mode: overlay;
+        }
+
+        .sandal-inner {
+            fill: rgba(255, 255, 255, 0.03);
+            stroke: none;
+        }
+
+        /* Ripple animation */
+        @keyframes rippleExpand {
+            0% {
+                r: 20;
+                stroke-opacity: 0.4;
+                stroke-width: 3;
+                filter: blur(0px);
+            }
+            50% {
+                stroke-opacity: 0.2;
+                filter: blur(1px);
+            }
+            100% {
+                r: 250;
+                stroke-opacity: 0;
+                stroke-width: 0.5;
+                filter: blur(2px);
+            }
+        }
+
+        .ripple {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            animation: rippleExpand 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            mix-blend-mode: screen;
+        }
+
+        /* Light droplet animation */
+        @keyframes dropletAscend {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.5);
+                filter: blur(0px);
+            }
+            10% {
+                opacity: 0.6;
+                transform: translate(0, -10px) scale(0.8);
+            }
+            30% {
+                opacity: 0.8;
+                filter: blur(0.5px);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, -180px) scale(0.2);
+                filter: blur(3px);
+            }
+        }
+
+        .droplet {
+            fill: rgba(255, 255, 255, 0.9);
+            animation: dropletAscend 5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            mix-blend-mode: screen;
+        }
+
+        /* Kufic text revelation */
+        @keyframes kuficReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+                filter: blur(5px);
+            }
+            15% {
+                filter: blur(0px);
+            }
+            25% {
+                opacity: 0.9;
+                transform: scale(1) translateY(0);
+            }
+            75% {
+                opacity: 0.9;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.9) translateY(-10px);
+                filter: blur(3px);
+            }
+        }
+
+        .kufic-text {
+            font-family: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+            font-size: 56px;
+            fill: rgba(255, 255, 255, 0.95);
+            text-anchor: middle;
+            pointer-events: none;
+            animation: kuficReveal 5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+            mix-blend-mode: screen;
+        }
+
+        /* Stage completion - divine light */
+        @keyframes divineLight {
+            0% {
+                r: 10;
+                stroke-opacity: 0;
+                stroke-width: 20;
+                filter: blur(0px);
+            }
+            20% {
+                stroke-opacity: 1;
+                filter: blur(0px);
+            }
+            100% {
+                r: 400;
+                stroke-opacity: 0;
+                stroke-width: 0.1;
+                filter: blur(5px);
+            }
+        }
+
+        .divine-pulse {
+            fill: none;
+            stroke: rgba(255, 255, 255, 1);
+            pointer-events: none;
+            animation: divineLight 3s ease-out forwards;
+            mix-blend-mode: screen;
+        }
+
+        /* Floating light particles */
+        @keyframes floatLight {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) translateX(0);
+            }
+            20% {
+                opacity: 0.3;
+            }
+            80% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) translateX(30px);
+            }
+        }
+
+        .light-particle {
+            fill: rgba(255, 255, 255, 0.4);
+            animation: floatLight 15s ease-in-out infinite;
+            filter: blur(1px);
+            mix-blend-mode: screen;
+        }
+
+        /* Tap area - invisible but present */
+        #tap-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* Subtle glow on tap */
+        @keyframes tapGlow {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .tap-glow {
+            fill: rgba(255, 255, 255, 0.2);
+            animation: tapGlow 0.3s ease-out forwards;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="tasbih-container">
+        <canvas id="pool-canvas"></canvas>
+        <svg id="pool-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <!-- Soft white gradient for pool -->
+                <radialGradient id="poolGradient" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.12" />
+                    <stop offset="30%" style="stop-color:#ffffff;stop-opacity:0.08" />
+                    <stop offset="60%" style="stop-color:#ffffff;stop-opacity:0.04" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.01" />
+                </radialGradient>
+                
+                <!-- Subtle sandal gradient -->
+                <linearGradient id="sandalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.05" />
+                    <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.02" />
+                </linearGradient>
+
+                <!-- Turbulence filter for water effect -->
+                <filter id="turbulence">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="2" result="turbulence" seed="5" />
+                    <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="3" />
+                </filter>
+            </defs>
+
+            <!-- Shimmering pool base -->
+            <ellipse cx="400" cy="400" rx="350" ry="320" 
+                     fill="url(#poolGradient)" 
+                     class="pool-surface"
+                     filter="url(#turbulence)" />
+            
+            <!-- Additional shimmer layers -->
+            <ellipse cx="400" cy="400" rx="280" ry="250" 
+                     fill="url(#poolGradient)" 
+                     class="pool-surface"
+                     style="animation-delay: -2s;" />
+            
+            <!-- Floating light particles -->
+            <g id="particles">
+                <circle class="light-particle" cx="200" cy="500" r="2" style="animation-delay: 0s;" />
+                <circle class="light-particle" cx="600" cy="550" r="1.5" style="animation-delay: 3s;" />
+                <circle class="light-particle" cx="400" cy="600" r="2.5" style="animation-delay: 6s;" />
+                <circle class="light-particle" cx="300" cy="520" r="1.8" style="animation-delay: 9s;" />
+                <circle class="light-particle" cx="500" cy="580" r="2.2" style="animation-delay: 12s;" />
+            </g>
+
+            <!-- Container for dynamic elements -->
+            <g id="dynamic-container"></g>
+
+            <!-- Sandal imprint (Nalain Shareef) - subtle on the surface -->
+            <g id="sandal-group" transform="translate(400, 400)">
+                <!-- Outer sandal shape -->
+                <path class="sandal-inner" d="
+                    M -25 -55
+                    C -30 -58, -32 -45, -28 -25
+                    L -26 5
+                    C -26 18, -24 28, -22 38
+                    C -20 44, -14 48, -5 48
+                    L 5 48
+                    C 14 48, 20 44, 22 38
+                    C 24 28, 26 18, 26 5
+                    L 28 -25
+                    C 32 -45, 30 -58, 25 -55
+                    C 22 -53, 18 -51, 12 -49
+                    C 8 -48, 4 -47, 0 -47
+                    C -4 -47, -8 -48, -12 -49
+                    C -18 -51, -22 -53, -25 -55
+                    Z
+                " />
+                
+                <!-- Sandal outline -->
+                <path class="sandal-imprint" d="
+                    M -25 -55
+                    C -30 -58, -32 -45, -28 -25
+                    L -26 5
+                    C -26 18, -24 28, -22 38
+                    C -20 44, -14 48, -5 48
+                    L 5 48
+                    C 14 48, 20 44, 22 38
+                    C 24 28, 26 18, 26 5
+                    L 28 -25
+                    C 32 -45, 30 -58, 25 -55
+                    C 22 -53, 18 -51, 12 -49
+                    C 8 -48, 4 -47, 0 -47
+                    C -4 -47, -8 -48, -12 -49
+                    C -18 -51, -22 -53, -25 -55
+                    Z
+                " />
+                
+                <!-- Inner detail - very subtle -->
+                <ellipse cx="0" cy="-8" rx="6" ry="12" 
+                    fill="none" 
+                    stroke="rgba(255, 255, 255, 0.08)" 
+                    stroke-width="0.3" />
+            </g>
+        </svg>
+        
+        <!-- Invisible tap overlay -->
+        <div id="tap-overlay"></div>
+    </div>
+
+    <script>
+        // Initialize canvas for additional effects
+        const canvas = document.getElementById('pool-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Create subtle animated background
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Create subtle moving highlights
+            const time = Date.now() * 0.0005;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            for (let i = 0; i < 3; i++) {
+                const offset = (i * Math.PI * 2) / 3;
+                const x = centerX + Math.cos(time + offset) * 100;
+                const y = centerY + Math.sin(time + offset) * 100;
+                
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, 150);
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.03)');
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // Tasbih state
+        let tapCount = 0;
+        let wirdStage = 0;
+        const svgNS = "http://www.w3.org/2000/svg";
+        const container = document.getElementById('dynamic-container');
+        const tapOverlay = document.getElementById('tap-overlay');
+        const poolSvg = document.getElementById('pool-svg');
+
+        // Sacred names for milestones
+        const kuficNames = {
+            33: 'ٱلْغَفَّار',     // Al-Ghaffar (The Ever-Forgiving)
+            66: 'ٱلرَّحْمَٰن',    // Ar-Rahman (The Most Merciful)
+            99: 'مُحَمَّد ﷺ'      // Muhammad (Peace Be Upon Him)
+        };
+
+        // Create ripple effect
+        function createRipple(x, y) {
+            const ripple = document.createElementNS(svgNS, 'circle');
+            
+            ripple.setAttribute('cx', x);
+            ripple.setAttribute('cy', y);
+            ripple.setAttribute('r', '20');
+            ripple.classList.add('ripple');
+            
+            container.appendChild(ripple);
+            
+            // Create secondary ripple for depth
+            setTimeout(() => {
+                const ripple2 = document.createElementNS(svgNS, 'circle');
+                ripple2.setAttribute('cx', x);
+                ripple2.setAttribute('cy', y);
+                ripple2.setAttribute('r', '20');
+                ripple2.classList.add('ripple');
+                ripple2.style.animationDelay = '0.2s';
+                container.appendChild(ripple2);
+                
+                setTimeout(() => ripple2.remove(), 4200);
+            }, 200);
+            
+            setTimeout(() => ripple.remove(), 4000);
+        }
+
+        // Create ascending light droplet
+        function createDroplet(x, y) {
+            const group = document.createElementNS(svgNS, 'g');
+            const droplet = document.createElementNS(svgNS, 'circle');
+            
+            // Randomize position slightly
+            const offsetX = (Math.random() - 0.5) * 30;
+            const offsetY = (Math.random() - 0.5) * 30;
+            
+            droplet.setAttribute('cx', '0');
+            droplet.setAttribute('cy', '0');
+            droplet.setAttribute('r', '4');
+            droplet.classList.add('droplet');
+            
+            group.setAttribute('transform', `translate(${x + offsetX}, ${y + offsetY})`);
+            group.appendChild(droplet);
+            container.appendChild(group);
+            
+            setTimeout(() => group.remove(), 5000);
+        }
+
+        // Reveal Kufic name
+        function revealKuficName(name) {
+            const text = document.createElementNS(svgNS, 'text');
+            
+            text.setAttribute('x', '400');
+            text.setAttribute('y', '250');
+            text.classList.add('kufic-text');
+            text.textContent = name;
+            
+            container.appendChild(text);
+            
+            setTimeout(() => text.remove(), 5000);
+        }
+
+        // Create divine light pulse for stage completion
+        function createDivineLight() {
+            // Multiple concentric pulses
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const pulse = document.createElementNS(svgNS, 'circle');
+                    pulse.setAttribute('cx', '400');
+                    pulse.setAttribute('cy', '400');
+                    pulse.setAttribute('r', '10');
+                    pulse.classList.add('divine-pulse');
+                    pulse.style.animationDelay = `${i * 0.2}s`;
+                    
+                    container.appendChild(pulse);
+                    setTimeout(() => pulse.remove(), 3000 + i * 200);
+                }, i * 200);
+            }
+        }
+
+        // Create tap glow effect
+        function createTapGlow(x, y) {
+            const glow = document.createElementNS(svgNS, 'circle');
+            glow.setAttribute('cx', x);
+            glow.setAttribute('cy', y);
+            glow.setAttribute('r', '60');
+            glow.classList.add('tap-glow');
+            
+            container.appendChild(glow);
+            setTimeout(() => glow.remove(), 300);
+        }
+
+        // Handle tap
+        function handleTap(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Get tap position relative to SVG
+            const rect = poolSvg.getBoundingClientRect();
+            const viewBox = poolSvg.viewBox.baseVal;
+            const x = ((e.clientX || e.touches?.[0]?.clientX || rect.left + rect.width/2) - rect.left) / rect.width * viewBox.width;
+            const y = ((e.clientY || e.touches?.[0]?.clientY || rect.top + rect.height/2) - rect.top) / rect.height * viewBox.height;
+            
+            // Center point for effects
+            const centerX = 400;
+            const centerY = 400;
+            
+            // Increment counter
+            tapCount++;
+            const stageCount = tapCount % 100 || 100;
+            
+            // Create effects at center (where sandal is)
+            createTapGlow(centerX, centerY);
+            createRipple(centerX, centerY);
+            createDroplet(centerX, centerY);
+            
+            // Check for milestones
+            if (stageCount === 33) {
+                setTimeout(() => revealKuficName(kuficNames[33]), 300);
+            } else if (stageCount === 66) {
+                setTimeout(() => revealKuficName(kuficNames[66]), 300);
+            } else if (stageCount === 99) {
+                setTimeout(() => revealKuficName(kuficNames[99]), 300);
+            } else if (stageCount === 100) {
+                wirdStage++;
+                setTimeout(() => createDivineLight(), 200);
+            }
+            
+            // Subtle haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate(5);
+            }
+        }
+
+        // Event listeners
+        tapOverlay.addEventListener('click', handleTap);
+        tapOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleTap(e);
+        }, { passive: false });
+
+        // Prevent scrolling and zooming
+        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        
+        // Prevent context menu
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
+</body>
+</html>

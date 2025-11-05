@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Zawiya - The Wellspring and the Sandal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f8f8;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #tasbih-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                #f5f5f5 25%, 
+                #fafafa 50%, 
+                #f0f0f0 75%, 
+                #ffffff 100%);
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { 
+                background: linear-gradient(135deg, 
+                    #ffffff 0%, 
+                    #f5f5f5 25%, 
+                    #fafafa 50%, 
+                    #f0f0f0 75%, 
+                    #ffffff 100%);
+            }
+            50% { 
+                background: linear-gradient(135deg, 
+                    #fafafa 0%, 
+                    #ffffff 25%, 
+                    #f5f5f5 50%, 
+                    #fafafa 75%, 
+                    #f8f8f8 100%);
+            }
+        }
+
+        #pool-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Sandal - extremely subtle */
+        .sandal-outline {
+            fill: none;
+            stroke: rgba(0, 0, 0, 0.02);
+            stroke-width: 0.5;
+            opacity: 0.3;
+        }
+
+        .sandal-fill {
+            fill: rgba(0, 0, 0, 0.008);
+            opacity: 0.5;
+        }
+
+        /* Ripple effect - disturbing the whiteness */
+        @keyframes rippleWhite {
+            0% {
+                r: 10;
+                stroke: rgba(0, 0, 0, 0.08);
+                stroke-width: 0.5;
+                opacity: 1;
+            }
+            30% {
+                stroke: rgba(0, 0, 0, 0.04);
+                stroke-width: 2;
+            }
+            100% {
+                r: 400;
+                stroke: rgba(0, 0, 0, 0);
+                stroke-width: 0.1;
+                opacity: 0;
+            }
+        }
+
+        .ripple-white {
+            fill: none;
+            pointer-events: none;
+            animation: rippleWhite 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Inner ripple - creates depth */
+        @keyframes innerRipple {
+            0% {
+                r: 5;
+                stroke: rgba(255, 255, 255, 0.9);
+                stroke-width: 3;
+                opacity: 1;
+            }
+            100% {
+                r: 380;
+                stroke: rgba(255, 255, 255, 0);
+                stroke-width: 0.1;
+                opacity: 0;
+            }
+        }
+
+        .ripple-inner {
+            fill: none;
+            pointer-events: none;
+            animation: innerRipple 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Light droplet - ascending from the surface */
+        @keyframes dropletRise {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+                fill: rgba(255, 255, 255, 0.9);
+            }
+            10% {
+                opacity: 0.7;
+                fill: rgba(240, 240, 240, 0.8);
+            }
+            50% {
+                opacity: 0.5;
+                fill: rgba(220, 220, 220, 0.6);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(0.2);
+                fill: rgba(200, 200, 200, 0);
+            }
+        }
+
+        .droplet-light {
+            animation: dropletRise 4s ease-out forwards;
+            filter: blur(0.5px);
+        }
+
+        /* Kufic text - emerging from the whiteness */
+        @keyframes kuficEmerge {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+                filter: blur(8px);
+            }
+            20% {
+                opacity: 0.3;
+                filter: blur(2px);
+            }
+            35% {
+                opacity: 0.5;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+            65% {
+                opacity: 0.5;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+            80% {
+                opacity: 0.3;
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+                filter: blur(8px);
+            }
+        }
+
+        .kufic-revelation {
+            font-family: 'Scheherazade New', 'Amiri', 'Noto Naskh Arabic', serif;
+            font-size: 64px;
+            font-weight: 300;
+            fill: rgba(0, 0, 0, 0.15);
+            text-anchor: middle;
+            pointer-events: none;
+            animation: kuficEmerge 6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Divine completion - pure light burst */
+        @keyframes divineCompletion {
+            0% {
+                r: 0;
+                stroke: rgba(255, 255, 255, 0);
+                stroke-width: 30;
+                opacity: 0;
+            }
+            10% {
+                stroke: rgba(255, 255, 255, 1);
+                opacity: 1;
+            }
+            50% {
+                stroke: rgba(240, 240, 240, 0.5);
+            }
+            100% {
+                r: 500;
+                stroke: rgba(220, 220, 220, 0);
+                stroke-width: 0.1;
+                opacity: 0;
+            }
+        }
+
+        .divine-burst {
+            fill: none;
+            pointer-events: none;
+            animation: divineCompletion 2.5s ease-out forwards;
+            filter: blur(1px);
+        }
+
+        /* Tap overlay */
+        #tap-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* Subtle ambient movement */
+        @keyframes drift {
+            0%, 100% {
+                transform: translateX(0) translateY(0);
+            }
+            33% {
+                transform: translateX(30px) translateY(-20px);
+            }
+            66% {
+                transform: translateX(-20px) translateY(30px);
+            }
+        }
+
+        .ambient-circle {
+            fill: rgba(0, 0, 0, 0.01);
+            animation: drift 20s ease-in-out infinite;
+        }
+
+        /* Counter display (hidden by default) */
+        #counter-debug {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            display: none; /* Set to 'block' for debugging */
+        }
+    </style>
+</head>
+<body>
+    <div id="tasbih-container">
+        <svg id="pool-svg" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <!-- Very subtle gradients -->
+                <radialGradient id="whiteGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#f8f8f8;stop-opacity:1" />
+                </radialGradient>
+                
+                <!-- Sandal shadow gradient -->
+                <radialGradient id="sandalShadow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#000000;stop-opacity:0.01" />
+                    <stop offset="100%" style="stop-color:#000000;stop-opacity:0.005" />
+                </radialGradient>
+            </defs>
+
+            <!-- Base white surface -->
+            <rect width="800" height="800" fill="url(#whiteGradient)" />
+            
+            <!-- Subtle ambient circles -->
+            <circle class="ambient-circle" cx="200" cy="300" r="150" style="animation-delay: 0s;" />
+            <circle class="ambient-circle" cx="600" cy="500" r="200" style="animation-delay: -7s;" />
+            <circle class="ambient-circle" cx="400" cy="200" r="180" style="animation-delay: -14s;" />
+
+            <!-- Container for dynamic elements -->
+            <g id="dynamic-container"></g>
+
+            <!-- The Sandal (Nalain Shareef) - barely visible imprint -->
+            <g id="sandal-group" transform="translate(400, 400)">
+                <!-- Shadow/imprint -->
+                <ellipse cx="0" cy="5" rx="35" ry="60" fill="url(#sandalShadow)" opacity="0.3" />
+                
+                <!-- Main sandal shape - extremely subtle -->
+                <path class="sandal-fill" d="
+                    M -22 -50
+                    C -26 -52, -28 -40, -25 -22
+                    L -23 0
+                    C -23 15, -21 25, -19 35
+                    C -17 42, -12 45, -4 45
+                    L 4 45
+                    C 12 45, 17 42, 19 35
+                    C 21 25, 23 15, 23 0
+                    L 25 -22
+                    C 28 -40, 26 -52, 22 -50
+                    C 19 -48, 15 -46, 10 -44
+                    C 6 -43, 3 -42, 0 -42
+                    C -3 -42, -6 -43, -10 -44
+                    C -15 -46, -19 -48, -22 -50
+                    Z
+                " />
+                
+                <!-- Sandal outline - almost invisible -->
+                <path class="sandal-outline" d="
+                    M -22 -50
+                    C -26 -52, -28 -40, -25 -22
+                    L -23 0
+                    C -23 15, -21 25, -19 35
+                    C -17 42, -12 45, -4 45
+                    L 4 45
+                    C 12 45, 17 42, 19 35
+                    C 21 25, 23 15, 23 0
+                    L 25 -22
+                    C 28 -40, 26 -52, 22 -50
+                    C 19 -48, 15 -46, 10 -44
+                    C 6 -43, 3 -42, 0 -42
+                    C -3 -42, -6 -43, -10 -44
+                    C -15 -46, -19 -48, -22 -50
+                    Z
+                " />
+                
+                <!-- Inner marking - barely there -->
+                <ellipse cx="0" cy="-5" rx="5" ry="10" 
+                    fill="none" 
+                    stroke="rgba(0, 0, 0, 0.015)" 
+                    stroke-width="0.3" />
+            </g>
+        </svg>
+        
+        <!-- Invisible tap overlay -->
+        <div id="tap-overlay"></div>
+        
+        <!-- Debug counter (hidden) -->
+        <div id="counter-debug">0</div>
+    </div>
+
+    <script>
+        // Tasbih state
+        let tapCount = 0;
+        let wirdStage = 0;
+        const svgNS = "http://www.w3.org/2000/svg";
+        const container = document.getElementById('dynamic-container');
+        const tapOverlay = document.getElementById('tap-overlay');
+        const poolSvg = document.getElementById('pool-svg');
+        const debugCounter = document.getElementById('counter-debug');
+
+        // Sacred names for milestones
+        const kuficNames = {
+            33: 'الغفّار',      // Al-Ghaffar
+            66: 'الرحمن',      // Ar-Rahman
+            99: 'محمّد ﷺ'     // Muhammad (PBUH)
+        };
+
+        // Create ripple in the whiteness
+        function createRipple(x, y) {
+            // Outer dark ripple
+            const rippleOuter = document.createElementNS(svgNS, 'circle');
+            rippleOuter.setAttribute('cx', x);
+            rippleOuter.setAttribute('cy', y);
+            rippleOuter.setAttribute('r', '10');
+            rippleOuter.classList.add('ripple-white');
+            container.appendChild(rippleOuter);
+            
+            // Inner light ripple for depth
+            setTimeout(() => {
+                const rippleInner = document.createElementNS(svgNS, 'circle');
+                rippleInner.setAttribute('cx', x);
+                rippleInner.setAttribute('cy', y);
+                rippleInner.setAttribute('r', '5');
+                rippleInner.classList.add('ripple-inner');
+                container.appendChild(rippleInner);
+                
+                setTimeout(() => rippleInner.remove(), 3000);
+            }, 50);
+            
+            // Third ripple for complexity
+            setTimeout(() => {
+                const rippleThird = document.createElementNS(svgNS, 'circle');
+                rippleThird.setAttribute('cx', x);
+                rippleThird.setAttribute('cy', y);
+                rippleThird.setAttribute('r', '10');
+                rippleThird.classList.add('ripple-white');
+                rippleThird.style.animationDelay = '0.3s';
+                rippleThird.style.opacity = '0.5';
+                container.appendChild(rippleThird);
+                
+                setTimeout(() => rippleThird.remove(), 3300);
+            }, 300);
+            
+            setTimeout(() => rippleOuter.remove(), 3000);
+        }
+
+        // Create ascending light particle
+        function createDroplet(x, y) {
+            const droplet = document.createElementNS(svgNS, 'circle');
+            
+            // Add slight randomness
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 20;
+            
+            droplet.setAttribute('cx', x + offsetX);
+            droplet.setAttribute('cy', y + offsetY);
+            droplet.setAttribute('r', '3');
+            droplet.classList.add('droplet-light');
+            
+            container.appendChild(droplet);
+            setTimeout(() => droplet.remove(), 4000);
+        }
+
+        // Reveal Kufic name
+        function revealKuficName(name) {
+            const text = document.createElementNS(svgNS, 'text');
+            
+            text.setAttribute('x', '400');
+            text.setAttribute('y', '280');
+            text.classList.add('kufic-revelation');
+            text.textContent = name;
+            
+            // Add subtle background glow
+            const glow = document.createElementNS(svgNS, 'circle');
+            glow.setAttribute('cx', '400');
+            glow.setAttribute('cy', '260');
+            glow.setAttribute('r', '100');
+            glow.setAttribute('fill', 'rgba(255, 255, 255, 0.8)');
+            glow.style.animation = 'kuficEmerge 6s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            
+            container.appendChild(glow);
+            container.appendChild(text);
+            
+            setTimeout(() => {
+                text.remove();
+                glow.remove();
+            }, 6000);
+        }
+
+        // Create divine completion burst
+        function createDivineBurst() {
+            // Multiple bursts for ethereal effect
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    const burst = document.createElementNS(svgNS, 'circle');
+                    burst.setAttribute('cx', '400');
+                    burst.setAttribute('cy', '400');
+                    burst.setAttribute('r', '0');
+                    burst.classList.add('divine-burst');
+                    
+                    container.appendChild(burst);
+                    setTimeout(() => burst.remove(), 2500);
+                }, i * 150);
+            }
+            
+            // Flash effect
+            const flash = document.createElementNS(svgNS, 'rect');
+            flash.setAttribute('width', '800');
+            flash.setAttribute('height', '800');
+            flash.setAttribute('fill', 'white');
+            flash.style.opacity = '0';
+            flash.style.animation = 'flash 0.5s ease-out forwards';
+            
+            const flashStyle = document.createElement('style');
+            flashStyle.textContent = `
+                @keyframes flash {
+                    0% { opacity: 0; }
+                    50% { opacity: 0.3; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(flashStyle);
+            
+            container.appendChild(flash);
+            setTimeout(() => {
+                flash.remove();
+                flashStyle.remove();
+            }, 500);
+        }
+
+        // Handle tap
+        function handleTap(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Always use center point for effects (where sandal is)
+            const centerX = 400;
+            const centerY = 400;
+            
+            // Increment counter
+            tapCount++;
+            const stageCount = tapCount % 100 || 100;
+            debugCounter.textContent = tapCount;
+            
+            // Create ripple and droplet effects
+            createRipple(centerX, centerY);
+            
+            // Create multiple droplets for richness
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => {
+                    createDroplet(centerX, centerY);
+                }, i * 100);
+            }
+            
+            // Check for milestones
+            if (stageCount === 33) {
+                setTimeout(() => revealKuficName(kuficNames[33]), 400);
+            } else if (stageCount === 66) {
+                setTimeout(() => revealKuficName(kuficNames[66]), 400);
+            } else if (stageCount === 99) {
+                setTimeout(() => revealKuficName(kuficNames[99]), 400);
+            } else if (stageCount === 100) {
+                wirdStage++;
+                setTimeout(() => createDivineBurst(), 300);
+            }
+            
+            // Very subtle haptic
+            if ('vibrate' in navigator) {
+                navigator.vibrate(3);
+            }
+        }
+
+        // Event listeners
+        tapOverlay.addEventListener('click', handleTap);
+        tapOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleTap(e);
+        }, { passive: false });
+
+        // Prevent unwanted interactions
+        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
+</body>
+</html>

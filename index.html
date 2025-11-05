@@ -1,249 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murid Companion</title>
-    <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Base Styles */
-        body { font-family: 'Inter', sans-serif; }
-        .arabic { font-family: 'Amiri', serif; line-height: 2.0; }
-        .main-title { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.05em; }
-        .section-title { font-family: 'Amiri', serif; font-weight: 700; }
-        .page { display: flex; flex-direction: column; }
-
-        /* PWA Layout */
-        html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%; background-color: #f9fafb; /* Lighter Gray */ }
-        .swipe-container { display: flex; overflow-x: auto; width: 100vw; height: 100vh; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
-        .page-container { flex: 0 0 100vw; width: 100vw; height: 100vh; overflow-y: auto; scroll-snap-align: start; padding: 1rem; }
-        .swipe-container::-webkit-scrollbar { display: none; }
-        .swipe-container { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Antechamber Styles */
-        .antechamber-bg { background-color: #111827; /* Deep Indigo/Gray */ color: white; }
-        .prompt { opacity: 0; transition: opacity 1s ease-in-out; }
-        .prompt.active { opacity: 1; }
-        .antechamber-button { background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s; }
-        .antechamber-button:hover { background-color: rgba(255, 255, 255, 0.2); }
-
-        /* Tasbih Mirror Styles */
-        #mirror-container { position: relative; width: 300px; height: 300px; border-radius: 50%; background: #1f2937; box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.5); overflow: hidden; cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
-        #tarnish-overlay { position: absolute; width: 100%; height: 100%; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity 0.5s ease-out; opacity: 1; }
-        #divine-names-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; color: #f0f9ff; /* Light Sky Blue */ }
-        .divine-name { font-family: 'Amiri', serif; font-size: 3rem; opacity: 0.7; }
-        #mirror-container:active { transform: scale(0.98); }
-
-        /* Pool of Light Styles */
-        .pool-of-light-bg { background: radial-gradient(circle, #f0f9ff 0%, #e0f2fe 100%); }
-        .ripple { position: absolute; border-radius: 50%; border: 2px solid rgba(59, 130, 246, 0.5); opacity: 0; animation: ripple-effect 2s ease-out; }
-        @keyframes ripple-effect { from { transform: scale(0); opacity: 1; } to { transform: scale(1); opacity: 0; } }
-        .wisdom-drop { opacity: 0; animation: fade-in-out 8s ease-in-out; }
-        @keyframes fade-in-out { 0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; } }
-    </style>
-</head>
-<body class="text-gray-800">
-
-    <div class="swipe-container">
-
-        <div class="page-container" id="home">
-            <div class="max-w-3xl mx-auto page">
-                <header class="text-center">
-                    <img src="images/icon-512x512.png" alt="App Logo" class="rounded-3xl w-48 h-48 mx-auto shadow-lg mb-6">
-                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 main-title">Murid Companion</h1>
-                </header>
-                <main class="space-y-4 mt-8">
-                    <a href="#antechamber" class="toc-link text-white bg-emerald-700 hover:bg-emerald-800 text-center font-bold text-2xl py-4">Start Daily Wird</a>
-                </main>
-            </div>
-        </div>
-
-        <div class="page-container antechamber-bg" id="antechamber">
-            <div class="max-w-3xl mx-auto flex-grow flex flex-col items-center justify-center text-center p-4">
-                <div id="prompt-1" class="prompt active">
-                    <p class="text-2xl leading-relaxed mb-8">Peace begins with a body at ease.<br><span class="text-lg opacity-75">The Prophet ﷺ taught us that a focused heart is a free heart. Take a moment now to ensure you are comfortable, free from hunger or any pressing need.</span></p>
-                    <button id="prompt-1-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">I am ready</button>
-                </div>
-                <div id="prompt-2" class="prompt hidden">
-                    <p class="text-2xl leading-relaxed mb-8">Now, turn your heart to your guide, Shaykh Muhammad.<br><span class="text-lg opacity-75">See him as your living link to a river of souls stretching back to the Messenger of Allah ﷺ. You are not alone; you are joining that river.</span></p>
-                    <button id="prompt-2-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">Connect my heart</button>
-                </div>
-                <div id="prompt-3" class="prompt hidden">
-                    <p class="text-2xl leading-relaxed mb-8">Your intention is your destination.<br><span class="text-lg opacity-75">Remember what this `wird` is for: a spiritual shower to cleanse, a sacred truth to strengthen, and a beautiful prayer to perfume your soul.</span></p>
-                    <button id="prompt-3-btn" class="antechamber-button rounded-lg px-6 py-3 text-xl">Begin the Wird</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="page-container" id="wird">
-            <div class="max-w-3xl mx-auto flex flex-col h-full justify-between items-center text-center">
-                <div class="pt-4">
-                    <h2 id="dhikr-title" class="text-2xl font-bold text-gray-700"></h2>
-                </div>
-                
-                <div id="mirror-container">
-                    <div id="divine-names-container">
-                        <p id="divine-name-1" class="divine-name"></p>
-                        <p id="divine-name-2" class="divine-name"></p>
-                    </div>
-                    <div id="tarnish-overlay"></div>
-                </div>
-
-                <div class="h-24 p-4 text-2xl font-semibold text-gray-800">
-                    <span id="current-count">0</span> / <span id="total-count">100</span>
-                    <p id="completion-message" class="text-xl text-emerald-700 font-semibold mt-2"></p>
-                </div>
-            </div>
-        </div>
-        
-    </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#059669">
+  <meta name="description" content="A tool for consistent spiritual practice and learning">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Zawiya">
+  
+  <title>Digital Zawiya</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☪️</text></svg>">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☪️</text></svg>">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts for Arabic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    .font-arabic {
+      font-family: 'Amiri', serif;
+    }
     
-    <script>
-        // --- DATA ---
-        const wirdSequence = [
-            { title: "Istighfar (Cleansing)", target: 100, names: ["Al-Ghaffar", "At-Tawwab"] },
-            { title: "Tahlil (Strengthening)", target: 100, names: ["Al-Ahad", "Al-Qayyum"] },
-            { title: "Salawat (Beautifying)", target: 100, names: ["Ar-Rahman", "Al-Wadud"] }
-        ];
-        const wisdomQuotes = [
-            { quote: "He who knows himself knows his Lord. The greatest journey is the one taken into the landscape of your own soul.", attribution: "Imam al-Ghazali" },
-            { quote: "The dhikr is the polishing of the heart. The more you polish, the more it reflects the Divine.", attribution: "Prophetic Tradition" },
-            { quote: "Your remedy is within you, yet you do not perceive it.", attribution: "Sayyiduna Ali" }
-        ];
-
-        // --- ELEMENT SELECTORS ---
-        const container = document.querySelector('.swipe-container');
-        const pages = document.querySelectorAll('.page-container');
-        // Antechamber elements
-        const antechamberPrompts = [document.getElementById('prompt-1'), document.getElementById('prompt-2'), document.getElementById('prompt-3')];
-        const antechamberBtns = [document.getElementById('prompt-1-btn'), document.getElementById('prompt-2-btn'), document.getElementById('prompt-3-btn')];
-        // Tasbih elements
-        const wirdPage = document.getElementById('wird');
-        const dhikrTitleEl = document.getElementById('dhikr-title');
-        const mirrorContainer = document.getElementById('mirror-container');
-        const tarnishOverlay = document.getElementById('tarnish-overlay');
-        const divineName1El = document.getElementById('divine-name-1');
-        const divineName2El = document.getElementById('divine-name-2');
-        const currentCountEl = document.getElementById('current-count');
-        const totalCountEl = document.getElementById('total-count');
-        const completionMessageEl = document.getElementById('completion-message');
-
-        let currentPageIndex = 0;
-        let wirdIndex = 0;
-        let currentCount = 0;
-
-        // --- NAVIGATION ---
-        function scrollToPage(id) {
-            const targetPage = document.getElementById(id);
-            if(targetPage) {
-                targetPage.scrollIntoView({ behavior: 'smooth' });
-                // Note: Full nav logic (dots, etc) would be here
-            }
-        }
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                scrollToPage(targetId);
-            });
-        });
-
-        // --- ANTECHAMBER LOGIC ---
-        let currentPrompt = 0;
-        antechamberBtns.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                antechamberPrompts[index].classList.remove('active');
-                antechamberPrompts[index].classList.add('hidden');
-                
-                currentPrompt++;
-                if (currentPrompt < antechamberPrompts.length) {
-                    antechamberPrompts[currentPrompt].classList.remove('hidden');
-                    antechamberPrompts[currentPrompt].classList.add('active');
-                } else {
-                    scrollToPage('wird');
-                    resetWird();
-                }
-            });
-        });
-
-        // --- TASBIH LOGIC ---
-        function updateDhikrUI() {
-            if (wirdIndex < wirdSequence.length) {
-                const currentDhikr = wirdSequence[wirdIndex];
-                dhikrTitleEl.innerText = currentDhikr.title;
-                divineName1El.innerText = currentDhikr.names[0];
-                divineName2El.innerText = currentDhikr.names[1];
-                currentCountEl.innerText = currentCount;
-                totalCountEl.innerText = currentDhikr.target;
-                completionMessageEl.innerText = '';
-                tarnishOverlay.style.opacity = 1;
-            } else {
-                // --- HUDOOR PHASE (POOL OF LIGHT) ---
-                dhikrTitleEl.innerText = '';
-                mirrorContainer.style.transition = 'opacity 1s ease-out';
-                mirrorContainer.style.opacity = 0;
-                wirdPage.classList.add('pool-of-light-bg');
-                
-                completionMessageEl.innerText = "Dhikr complete. Remain in presence.";
-                
-                // Show ripples of wisdom
-                let wisdomIndex = 0;
-                const showWisdom = setInterval(() => {
-                    if (wisdomIndex >= wisdomQuotes.length) {
-                        clearInterval(showWisdom);
-                        return;
-                    }
-                    const ripple = document.createElement('div');
-                    ripple.classList.add('ripple');
-                    wirdPage.appendChild(ripple);
-                    ripple.addEventListener('animationend', () => ripple.remove());
-
-                    const wisdomText = document.createElement('p');
-                    wisdomText.classList.add('wisdom-drop', 'text-2xl', 'text-center', 'text-blue-800', 'absolute', 'p-4');
-                    wisdomText.innerText = `"${wisdomQuotes[wisdomIndex].quote}"\n- ${wisdomQuotes[wisdomIndex].attribution}`;
-                    wirdPage.appendChild(wisdomText);
-                    wisdomText.addEventListener('animationend', () => wisdomText.remove());
-
-                    wisdomIndex++;
-                }, 8000);
-            }
-        }
-
-        function handleTap() {
-            if (wirdIndex >= wirdSequence.length) return;
-            currentCount++;
-            const target = wirdSequence[wirdIndex].target;
-            const polishPercentage = currentCount / target;
-            
-            tarnishOverlay.style.opacity = 1 - polishPercentage;
-            currentCountEl.innerText = currentCount;
-
-            if (navigator.vibrate) { navigator.vibrate(50); }
-
-            if (currentCount >= target) {
-                wirdIndex++;
-                currentCount = 0;
-                if (navigator.vibrate) navigator.vibrate([100, 30, 100]);
-                setTimeout(updateDhikrUI, 1200); // Pause to appreciate the clear mirror
-            }
-        }
-        
-        function resetWird() {
-            wirdIndex = 0;
-            currentCount = 0;
-            wirdPage.classList.remove('pool-of-light-bg');
-            mirrorContainer.style.opacity = 1;
-            updateDhikrUI();
-        }
-
-        mirrorContainer.addEventListener('click', handleTap);
-        
-        // --- INITIALIZE ---
-        resetWird();
-    </script>
+    /* Prevent pull-to-refresh on mobile */
+    body {
+      overscroll-behavior-y: contain;
+    }
+    
+    /* Smooth transitions */
+    * {
+      transition: background-color 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- React & ReactDOM from CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel for JSX transformation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Import Lucide React Icons -->
+  <script type="module">
+    import * as LucideReact from 'https://cdn.skypack.dev/lucide-react';
+    window.LucideReact = LucideReact;
+  </script>
+  
+  <!-- Main App -->
+  <script type="text/babel" data-type="module">
+    import DigitalZawiyaApp from './digital-zawiya.jsx';
+    
+    const { Home, BookOpen, Heart, Settings: SettingsIcon, ChevronDown, ChevronUp, Menu, X } = window.LucideReact;
+    
+    // Make icons available globally for the app
+    window.IconComponents = { Home, BookOpen, Heart, SettingsIcon, ChevronDown, ChevronUp, Menu, X };
+    
+    ReactDOM.render(<DigitalZawiyaApp />, document.getElementById('root'));
+  </script>
+  
+  <!-- Register Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered:', registration);
+          })
+          .catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
